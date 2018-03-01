@@ -2,6 +2,11 @@ sudo: false
 
 language: cpp
 
+compiler:
+- clang
+os:
+- linux
+
 stages:
   - compile
   - test

@@ -7,13 +7,6 @@ compiler:
 os:
 - linux
 
-stages:
-  - compile
-  - test
-
-jobs:
-  include:
-    - stage : compile
-      script: $CXX main.cc -o main
-    - stage : test
-      script: ./main
+script:
+  - $CXX main.cc -o main
+  - ./main

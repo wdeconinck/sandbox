@@ -1,0 +1,14 @@
+sudo: false
+
+language: cpp
+
+stages:
+  - compile
+  - test
+
+jobs:
+  include:
+    - stage : compile
+      script $CXX main.cc -o main
+    - stage : test
+      ./main

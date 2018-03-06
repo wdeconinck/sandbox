@@ -16,8 +16,8 @@ addons:
     packages:
       - cmake
       - clang-3.8
-      - gfortran
-env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+      - gfortran-7
+env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran-7'
 
 before_install:
   - export CC=${C_COMPILER}

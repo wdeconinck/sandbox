@@ -13,18 +13,14 @@ addons:
       - kalakris-cmake
       - ubuntu-toolchain-r-test
     packages:
-      - gfortran-6
       - cmake
+#      - gfortran-6
 
-before_install:
-  - sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-6 50
-  - gfortran --version
-  - echo $FC
-  - export FC=/usr/bin/gfortran
+#before_install:
+#  - sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-6 50
+#  - export FC=/usr/bin/gfortran
 
 install:
-  - echo $FC
-  - export FC=/usr/bin/gfortran
   - pushd . && cd $HOME
   - git clone -b master https://github.com/ecmwf/ecbuild
   - git clone -b master https://github.com/ecmwf/eckit
@@ -41,7 +37,7 @@ install:
 script:
   - echo $FC
   - export FC=/usr/bin/gfortran
-  - $FC --version
+#  - $FC --version
   - $CXX --version
   - $CXX main.cc -o main
   - ./main

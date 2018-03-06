@@ -1,12 +1,47 @@
-sudo: false
+sudo: required
 
 language: cpp
 
 compiler:
-- clang
+  - clang
 os:
-- linux
+  - linux
+
+addons:
+  apt:
+    sources:
+      - kalakris-cmake
+      - ubuntu-toolchain-r-test
+    packages:
+      - gfortran-6
+      - cmake
+
+before_install:
+  - sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-6 50
+  - gfortran --version
+  - echo $FC
+  - export FC=/usr/bin/gfortran
+
+install:
+  - echo $FC
+  - export FC=/usr/bin/gfortran
+  - pushd . && cd $HOME
+  - git clone -b master https://github.com/ecmwf/ecbuild
+  - git clone -b master https://github.com/ecmwf/eckit
+  - git clone -b master https://github.com/ecmwf/fckit
+  - export PATH=$HOME/ecbuild/bin:$PATH
+  - mkdir -p $HOME/builds/eckit && cd $HOME/builds/eckit
+  - ecbuild --build=debug --prefix=$HOME/deps -- $HOME/eckit
+  - make install
+  - mkdir -p $HOME/builds/fckit && cd $HOME/builds/fckit
+  - ecbuild --build=debug --prefix=$HOME/deps -- $HOME/fckit
+  - make install
+  - popd
 
 script:
+  - echo $FC
+  - export FC=/usr/bin/gfortran
+  - $FC --version
+  - $CXX --version
   - $CXX main.cc -o main
   - ./main

@@ -53,3 +53,9 @@ script:
   - $CXX --version
   - $CXX main.cc -o main
   - ./main
+  - git clone -b master https://github.com/ecmwf/atlas
+  - mkdir build && cd build
+  - ecbuild --build=debug --prefix=$HOME/deps ../atlas
+  - make -j8
+  - ctest
+  

@@ -11,15 +11,26 @@ addons:
   apt:
     sources:
       - kalakris-cmake
+      - llvm-toolchain-precise
       - ubuntu-toolchain-r-test
     packages:
       - cmake
-      - gfortran-6
+      - clang-3.8
+      - gfortran
+env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
 
 before_install:
-  - export FC=gfortran-6
+  - export CC=${C_COMPILER}
+  - export CXX=${CXX_COMPILER}
+  - export FC=${Fortran_COMPILER}
 
 install:
+  - echo $CC
+  - echo $CXX
+  - echo $FC
+  - $FC --version
+  - $CC --version
+  - $CXX --version
   - pushd . && cd $HOME
   - git clone -b master https://github.com/ecmwf/ecbuild
   - git clone -b master https://github.com/ecmwf/eckit
@@ -34,9 +45,11 @@ install:
   - popd
 
 script:
+  - echo $CC
+  - echo $CXX
   - echo $FC
-  - export FC=/usr/bin/gfortran
   - $FC --version
+  - $CC --version
   - $CXX --version
   - $CXX main.cc -o main
   - ./main

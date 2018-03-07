@@ -33,14 +33,14 @@ matrix:
 
     - os: linux
       compiler: clang
-      env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='mpich'
+      env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='mpich' CACHE_NAME=linux-clang3.8-mpich
 
     - os: linux
       compiler: clang
-      env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='openmpi'
+      env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='openmpi' CACHE_NAME=linux-clang3.8-openmpi
 
     - os: osx
-      env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' MPI=openmpi
+      env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' MPI=openmpi CACHE_NAME=osx-clang-openmpi
       osx_image: xcode9
 
 install:

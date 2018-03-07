@@ -44,11 +44,11 @@ install:
   - |
     ${TRAVIS_BUILD_DIR}/install-mpich.sh
     export MPI_HOME=${DEPS_DIR}/mpich
-    export PATH=${MPI_HOME}/bin:$PATH
+    export PATH=${MPI_HOME}/bin:${PATH}
 
-  ############################################################################
+  #################################################################
   # Install CMake
-  ############################################################################
+  #################################################################
   - |
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
       CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz"
@@ -64,7 +64,7 @@ install:
   #################################################################
   - |
     git clone -b master https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
-    export PATH=${DEPS_DIR}/ecbuild/bin:$PATH
+    export PATH=${DEPS_DIR}/ecbuild/bin:${PATH}
 
   #################################################################
   # Install eckit
@@ -110,5 +110,5 @@ script:
   - mkdir build && cd build
   - ecbuild --build=debug --prefix=$HOME/deps ../atlas
   - make -j8
-  - ctest
+  - ctest --output-on-failure
   - bin/atlas --info

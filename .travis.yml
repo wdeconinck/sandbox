@@ -19,10 +19,19 @@ addons:
       - gfortran
 env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
 
+cache:
+  directories:
+    - mpich
+    - mpich-3.2
+
 before_install:
   - export CC=${C_COMPILER}
   - export CXX=${CXX_COMPILER}
   - export FC=${Fortran_COMPILER}
+  - ./install-mpich.sh
+  - export MPI_HOME=$(pwd)/mpich
+  - export MPI_DIR=$(pwd)/mpich
+  - export MPI_PATH=$(pwd)/mpich
 
 install:
   - echo $CC

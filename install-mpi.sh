@@ -26,7 +26,6 @@ case "$os" in
     ;;
 
     Linux)
-        sudo apt-get update -q
         case "$MPI_IMPL" in
             mpich)
                 if [ -f mpich/include/mpi.h ]; then
@@ -50,7 +49,7 @@ case "$os" in
                           --enable-fast=all \
                           --enable-g=none \
                           --enable-timing=none
-                  make -j4
+                  make -j4 /dev/null
                   make install
                   cd -
                 fi
@@ -70,7 +69,7 @@ case "$os" in
                   cd $OMPIVER
                   ./configure \
                           --prefix=$(pwd)/../openmpi
-                  make -j4
+                  make -j4 > /dev/null
                   make install
                   cd -
                 fi

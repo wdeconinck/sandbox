@@ -8,15 +8,12 @@ MPICHVER=3.2.1
 
 case "$os" in
     Darwin)
-        brew update
-        brew upgrade cmake
-        brew list oclint || brew cask uninstall oclint # Prevent conflict with gcc
         case "$MPI_IMPL" in
             mpich|mpich3)
-                brew install mpich
+                brew upgrade mpich || brew install mpich
                 ;;
             openmpi)
-                brew install openmpi
+                brew upgrade openmpi || brew install openmpi
                 ;;
             *)
                 echo "Unknown MPI implementation: $MPI_IMPL"

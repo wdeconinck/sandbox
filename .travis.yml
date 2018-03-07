@@ -15,10 +15,11 @@ addons:
     packages:
       - clang-3.8
       - gfortran
-env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='openmpi'
 
 cache:
   directories:
+    - ${TRAVIS_BUILD_DIR}/deps/openmpi
     - ${TRAVIS_BUILD_DIR}/deps/mpich
     - ${TRAVIS_BUILD_DIR}/deps/eckit
     - ${TRAVIS_BUILD_DIR}/deps/fckit
@@ -42,8 +43,8 @@ install:
   # Install MPI
   #################################################################
   - |
-    ${TRAVIS_BUILD_DIR}/install-mpich.sh
-    export MPI_HOME=${DEPS_DIR}/mpich
+    ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
+    export MPI_HOME=${DEPS_DIR}/${MPI}
     export PATH=${MPI_HOME}/bin:${PATH}
 
   #################################################################
@@ -98,14 +99,16 @@ install:
 
 script:
 
-  - $FC  --version
-  - $CC  --version
-  - $CXX --version
-  - which mpirun
-  - which mpiexec
+  - |
+    $FC  --version
+    $CC  --version
+    $CXX --version
+    which mpirun
+    which mpiexec
 
-  - ATLAS_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/atlas
-  - ATLAS_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/atlas
+  - |
+    ATLAS_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/atlas
+    ATLAS_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/atlas
 
   #################################################################
   # Download Atlas
@@ -116,7 +119,7 @@ script:
   # Build Atlas
   #################################################################
   - mkdir -p ${ATLAS_BUILD_DIR} && cd ${ATLAS_BUILD_DIR}
-  - ecbuild --build=debug -- ${ATLAS_SOURCE_DIR}
+  - ecbuild --build=debug -- -DMPIEXEC=$(which mpirun) ${ATLAS_SOURCE_DIR}
   - make -j8
   - bin/atlas --info
 

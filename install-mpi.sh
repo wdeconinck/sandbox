@@ -47,7 +47,7 @@ case "$os" in
                           --enable-g=none \
                           --enable-timing=none
                   make -j8  > /dev/null 2>&1
-                  make install
+                  make install > /dev/null 2>&1
                   cd -
                 fi
                 ;;
@@ -67,7 +67,7 @@ case "$os" in
                   ./configure \
                           --prefix=$(pwd)/../openmpi
                   make -j8 > /dev/null 2>&1
-                  make install
+                  make install > /dev/null 2>&1
                   cd -
                 fi
                 ;;

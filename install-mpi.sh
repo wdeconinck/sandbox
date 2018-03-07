@@ -34,7 +34,7 @@ case "$os" in
                   echo "Downloading mpich source..."
                   wget http://www.mpich.org/static/downloads/${MPICHVER}/mpich-${MPICHVER}.tar.gz
                   tar xfz mpich-${MPICHVER}.tar.gz
-                  rm mpich-{MPICHVER}.tar.gz
+                  rm mpich-${MPICHVER}.tar.gz
                   echo "Configuring and building mpich..."
                   cd mpich-${MPICHVER}
                   ./configure \
@@ -46,7 +46,7 @@ case "$os" in
                           --enable-fast=all \
                           --enable-g=none \
                           --enable-timing=none
-                  make -j8 >& /dev/null
+                  make -j8  > /dev/null 2>&1
                   make install
                   cd -
                 fi
@@ -66,7 +66,7 @@ case "$os" in
                   cd $OMPIVER
                   ./configure \
                           --prefix=$(pwd)/../openmpi
-                  make -j8 >& /dev/null
+                  make -j8 > /dev/null 2>&1
                   make install
                   cd -
                 fi

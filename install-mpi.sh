@@ -1,6 +1,6 @@
 #!/bin/sh
 
-
+set -e
 MPI_IMPL="$1"
 os=`uname`
 OMPIVER=openmpi-3.0.0
@@ -49,7 +49,7 @@ case "$os" in
                           --enable-fast=all \
                           --enable-g=none \
                           --enable-timing=none
-                  make -j8 /dev/null
+                  make -j8 >& /dev/null
                   make install
                   cd -
                 fi
@@ -69,7 +69,7 @@ case "$os" in
                   cd $OMPIVER
                   ./configure \
                           --prefix=$(pwd)/../openmpi
-                  make -j8 > /dev/null
+                  make -j8 >& /dev/null
                   make install
                   cd -
                 fi

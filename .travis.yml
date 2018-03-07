@@ -152,6 +152,7 @@ install:
   # Install eckit
   #################################################################
   - |
+    rm -rf ${DEPS_DIR}/eckit
     export ECKIT_PATH=${DEPS_DIR}/eckit
     if [[ -z "$(ls -A ${ECKIT_PATH})" ]]; then
       ECKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/eckit
@@ -166,6 +167,7 @@ install:
   # Install fckit
   #################################################################
   - |
+    rm -rf ${DEPS_DIR}/fckit
     export FCKIT_PATH=${DEPS_DIR}/fckit
     if [[ -z "$(ls -A ${FCKIT_PATH})" ]]; then
       FCKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/fckit

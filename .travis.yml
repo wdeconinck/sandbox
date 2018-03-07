@@ -30,13 +30,13 @@ matrix:
 
   include:
 
-    # - os: linux
-    #   compiler: clang
-    #   env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='mpich'
+    - os: linux
+      compiler: clang
+      env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='mpich'
 
-    # - os: linux
-    #   compiler: clang
-    #   env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='openmpi'
+    - os: linux
+      compiler: clang
+      env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='openmpi'
 
     - os: osx
       env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' MPI=openmpi
@@ -49,10 +49,10 @@ install:
   #################################################################
   - |
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-      brew update
-      brew outdated gcc || brew upgrade gcc
+      brew upgrace gcc || brew install gcc
     fi
-    gfortran --version
+    which gcc
+    which gfortran
 
   #################################################################
   # Set compilers

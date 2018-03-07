@@ -1,4 +1,4 @@
-sudo: required
+sudo: false
 
 language: cpp
 
@@ -10,50 +10,94 @@ os:
 addons:
   apt:
     sources:
-      - kalakris-cmake
       - llvm-toolchain-precise
       - ubuntu-toolchain-r-test
     packages:
-      - cmake
       - clang-3.8
       - gfortran
 env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
 
 cache:
   directories:
-    - mpich
-    - mpich-3.2
-
-before_install:
-  - export CC=${C_COMPILER}
-  - export CXX=${CXX_COMPILER}
-  - export FC=${Fortran_COMPILER}
-  - ./install-mpich.sh
-  - export MPI_HOME=$(pwd)/mpich
-  - export MPI_DIR=$(pwd)/mpich
-  - export MPI_PATH=$(pwd)/mpich
+    - ${TRAVIS_BUILD_DIR}/deps/mpich
+    - ${TRAVIS_BUILD_DIR}/deps/eckit
+    - ${TRAVIS_BUILD_DIR}/deps/fckit
 
 install:
-  - echo $CC
-  - echo $CXX
-  - echo $FC
-  - $FC --version
-  - $CC --version
-  - $CXX --version
-  - pushd . && cd $HOME
-  - git clone -b master https://github.com/ecmwf/ecbuild
-  - git clone -b master https://github.com/ecmwf/eckit
-  - git clone -b master https://github.com/ecmwf/fckit
-  - export PATH=$HOME/ecbuild/bin:$PATH
-  - mkdir -p $HOME/builds/eckit && cd $HOME/builds/eckit
-  - ecbuild --build=debug --prefix=$HOME/deps -- $HOME/eckit
-  - make -j8 install
-  - mkdir -p $HOME/builds/fckit && cd $HOME/builds/fckit
-  - ecbuild --build=debug --prefix=$HOME/deps -- $HOME/fckit
-  - make -j8 install
-  - popd
+  #################################################################
+  # Set compilers
+  #################################################################
+  - |
+    export CC=${C_COMPILER}
+    export CXX=${CXX_COMPILER}
+    export FC=${Fortran_COMPILER}
+
+  #################################################################
+  # All dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/
+  #################################################################
+  - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
+  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+
+  #################################################################
+  # Install MPI
+  #################################################################
+  - |
+    ${TRAVIS_BUILD_DIR}/install-mpich.sh
+    export MPI_HOME=${DEPS_DIR}/mpich
+    export PATH=${MPI_HOME}/bin:$PATH
+
+  ############################################################################
+  # Install CMake
+  ############################################################################
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz"
+      mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+    else
+      brew upgrade cmake || brew install cmake
+    fi
+  - cmake --version
+
+  #################################################################
+  # Install ecbuild
+  #################################################################
+  - |
+    git clone -b master https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
+    export PATH=${DEPS_DIR}/ecbuild/bin:$PATH
+
+  #################################################################
+  # Install eckit
+  #################################################################
+  - |
+    export ECKIT_PATH=${DEPS_DIR}/eckit
+    if [[ -z "$(ls -A ${ECKIT_PATH})" ]]; then
+      ECKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/eckit
+      ECKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/eckit
+      git clone -b master https://github.com/ecmwf/eckit ${ECKIT_SOURCE_DIR}
+      mkdir -p ${ECKIT_BUILD_DIR} && cd ${ECKIT_BUILD_DIR}
+      ecbuild --build=debug --prefix=${ECKIT_PATH} -- -DENABLE_TESTS=OFF ${ECKIT_SOURCE_DIR}
+      make -j8 install
+    fi
+
+  #################################################################
+  # Install fckit
+  #################################################################
+  - |
+    export FCKIT_PATH=${DEPS_DIR}/fckit
+    if [[ -z "$(ls -A ${FCKIT_PATH})" ]]; then
+      FCKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/fckit
+      FCKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/fckit
+      git clone -b master https://github.com/ecmwf/fckit ${FCKIT_SOURCE_DIR}
+      mkdir -p ${FCKIT_BUILD_DIR} && cd ${FCKIT_BUILD_DIR}
+      ecbuild --build=debug --prefix=${FCKIT_PATH} -- -DENABLE_TESTS=OFF ${FCKIT_SOURCE_DIR}
+      make -j8 install
+    fi
+
+  - cd ${TRAVIS_BUILD_DIR}
 
 script:
+
   - echo $CC
   - echo $CXX
   - echo $FC
@@ -67,4 +111,4 @@ script:
   - ecbuild --build=debug --prefix=$HOME/deps ../atlas
   - make -j8
   - ctest
-  
+  - bin/atlas --info

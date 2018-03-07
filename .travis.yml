@@ -129,6 +129,7 @@ install:
       export PATH=${PGI_DIR}/bin:${PATH}
       export MPI_HOME=${PGI_DIR}/mpi/openmpi
       export PATH=${MPI_HOME}/bin:${PATH}
+      CMAKE_OPTIONS="-DREALTIME_PATH=/usr -DAIO_PATH=/usr"
     fi
 
 
@@ -181,9 +182,9 @@ install:
     if [[ -z "$(ls -A ${ECKIT_PATH})" ]]; then
       ECKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/eckit
       ECKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/eckit
-      git clone -b master https://github.com/ecmwf/eckit ${ECKIT_SOURCE_DIR}
+      git clone -b travis https://github.com/wdeconinck/eckit ${ECKIT_SOURCE_DIR}
       mkdir -p ${ECKIT_BUILD_DIR} && cd ${ECKIT_BUILD_DIR}
-      ecbuild --build=debug --prefix=${ECKIT_PATH} -- -DENABLE_TESTS=OFF ${ECKIT_SOURCE_DIR}
+      ecbuild --build=debug --prefix=${ECKIT_PATH} -- ${CMAKE_OPTIONS} -DENABLE_TESTS=OFF ${ECKIT_SOURCE_DIR}
       make -j8 install
     fi
 

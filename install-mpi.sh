@@ -14,6 +14,7 @@ case "$os" in
                 ;;
             openmpi)
                 brew upgrade openmpi || brew install openmpi
+                echo "localhost slots=12" >> /usr/local/etc/openmpi-default-hostfile
                 ;;
             *)
                 echo "Unknown MPI implementation: $MPI_IMPL"

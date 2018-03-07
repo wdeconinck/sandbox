@@ -56,7 +56,7 @@ matrix:
     - os: linux
       compiler: gcc
       env:
-        - CACHE_NAME=linux-gcc5-mpich
+        - CACHE_NAME=linux-gcc5-openmpi
         - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
         - MPI='openmpi'
       addons: *gcc5
@@ -68,19 +68,23 @@ matrix:
         - CXX_COMPILER='pgc++' C_COMPILER='pgcc' Fortran_COMPILER='pgfortran'
         - MPI='openmpi'
         - PGI_VERSION="CommunityEdition"
-
-    - os: osx
-      env: 
-        - CACHE_NAME=osx-clang-openmpi
-        - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
-        - MPI=openmpi
-      osx_image: xcode9
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['libncurses5-dev']
 
     - os: osx
       env: 
         - CACHE_NAME=osx-clang-mpich
         - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
         - MPI=mpich
+      osx_image: xcode9
+
+    - os: osx
+      env: 
+        - CACHE_NAME=osx-clang-openmpi
+        - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
+        - MPI=openmpi
       osx_image: xcode9
 
 before_install:
@@ -147,18 +151,6 @@ install:
         export PATH=${MPI_HOME}/bin:${PATH}
       fi
     fi
-    MPIEXEC=$(which mpirun)
-    MPIEXEC_NUMPROC_FLAG="-np"
-
-  # - |
-  #   MPIEXEC=$(which mpirun)
-  #   if [[ "${TRAVIS_OS_NAME}" == "osx" && "${MPI}" == "openmpi" ]]; then
-  #     cat > mpirun_oversubscribe << "EOF"
-  #     mpirun --oversubscribe
-  #     EOF
-  #     chmod 777 mpirun_oversubscribe
-  #     MPIEXEC=$(pwd)/mpirun_oversubscribe
-  #   fi
 
   #################################################################
   # Install CMake
@@ -227,7 +219,7 @@ script:
   # Build Atlas
   #################################################################
   - mkdir -p ${ATLAS_BUILD_DIR} && cd ${ATLAS_BUILD_DIR}
-  - ecbuild --build=debug -- -DMPIEXEC=${MPIEXEC} -DMPIEXEC_NUMPROC_FLAG=${MPIEXEC_NUMPROC_FLAG} ${CMAKE_OPTIONS} ${ATLAS_SOURCE_DIR}
+  - ecbuild --build=debug -- ${CMAKE_OPTIONS} ${ATLAS_SOURCE_DIR}
   - make -j8
   - bin/atlas --info
 

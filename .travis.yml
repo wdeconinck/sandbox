@@ -98,17 +98,35 @@ install:
 
 script:
 
-  - echo $CC
-  - echo $CXX
-  - echo $FC
-  - $FC --version
-  - $CC --version
+  - $FC  --version
+  - $CC  --version
   - $CXX --version
-  - $CXX main.cc -o main
-  - ./main
-  - git clone -b master https://github.com/ecmwf/atlas
-  - mkdir build && cd build
-  - ecbuild --build=debug --prefix=$HOME/deps ../atlas
+  - which mpirun
+  - which mpiexec
+
+  - ATLAS_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/atlas
+  - ATLAS_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/atlas
+
+  #################################################################
+  # Download Atlas
+  #################################################################
+  - git clone -b master https://github.com/ecmwf/atlas ${ATLAS_SOURCE_DIR}
+
+  #################################################################
+  # Build Atlas
+  #################################################################
+  - mkdir -p ${ATLAS_BUILD_DIR} && cd ${ATLAS_BUILD_DIR}
+  - ecbuild --build=debug -- ${ATLAS_SOURCE_DIR}
   - make -j8
-  - ctest --output-on-failure
   - bin/atlas --info
+
+  #################################################################
+  # Test Atlas
+  #################################################################
+  - ctest
+
+after_failure:
+
+  - cd ${ATLAS_BUILD_DIR}
+  - ctest -VV --rerun-failed
+  - cat ecbuild.log

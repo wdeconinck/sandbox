@@ -49,6 +49,7 @@ install:
   #################################################################
   - |
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+      brew cask uninstall oclint # Prevent conflict with gcc
       brew upgrade gcc || brew install gcc
     fi
     which gcc
@@ -73,8 +74,10 @@ install:
   #################################################################
   - |
     ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
-    export MPI_HOME=${DEPS_DIR}/${MPI}
-    export PATH=${MPI_HOME}/bin:${PATH}
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      export MPI_HOME=${DEPS_DIR}/${MPI}
+      export PATH=${MPI_HOME}/bin:${PATH}
+    fi
 
   #################################################################
   # Install CMake

@@ -2,10 +2,10 @@ sudo: false
 
 language: cpp
 
-compiler:
-  - clang
-os:
-  - linux
+
+# Workaround for https://github.com/travis-ci/travis-ci/issues/4681
+matrix:
+  - TRAVIS_EMPTY_JOB_WORKAROUND=true
 
 addons:
   apt:
@@ -15,7 +15,6 @@ addons:
     packages:
       - clang-3.8
       - gfortran
-env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='openmpi'
 
 cache:
   directories:
@@ -24,7 +23,36 @@ cache:
     - ${TRAVIS_BUILD_DIR}/deps/eckit
     - ${TRAVIS_BUILD_DIR}/deps/fckit
 
+matrix:
+  exclude:
+
+    - env: TRAVIS_EMPTY_JOB_WORKAROUND
+
+  include:
+
+    - os: linux
+      compiler: clang
+      env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='mpich'
+
+    - os: linux
+      compiler: clang
+      env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='openmpi'
+
+    - os: osx
+      env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' MPI=openmpi
+      osx_image: xcode8
+
 install:
+
+  #################################################################
+  # Install Fortran
+  #################################################################
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+      brew install gfortran
+    fi
+    gfortran --version
+
   #################################################################
   # Set compilers
   #################################################################

@@ -61,6 +61,14 @@ matrix:
         - MPI='openmpi'
       addons: *gcc5
 
+    - os: linux
+      compiler: gcc
+      env:
+        - CACHE_NAME=linux-pgi-openmpi
+        - CXX_COMPILER='pgc++' C_COMPILER='pgcc' Fortran_COMPILER='pgfortran'
+        - MPI='openmpi'
+        - PGI_VERSION="CommunityEdition"
+
     - os: osx
       env: 
         - CACHE_NAME=osx-clang-openmpi
@@ -102,12 +110,16 @@ install:
   - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
 
   #################################################################
-  # Install Fortran
+  # Install Compilers
   #################################################################
   - |
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew upgrade gcc || brew install gcc
     fi
+    if [[ "${PGI_VERSION:-notset}" == "CommunityEdition" ]]; then
+      ./install-pgi.sh
+    fi
+
 
   #################################################################
   # Install CGAL
@@ -128,12 +140,12 @@ install:
     fi
   - |
     MPIEXEC=$(which mpirun)
-    if [[ "${TRAVIS_OS_NAME}" == "osx" ]] && [[ "${MPI}" == "openmpi" ]]; then
+    if [[ "${TRAVIS_OS_NAME}" == "osx" && "${MPI}" == "openmpi" ]]; then
       cat > mpirun_oversubscribe << "EOF"
-      ${MPIEXEC} --oversubscribe
+      mpirun --oversubscribe
       EOF
       chmod 777 mpirun_oversubscribe
-      MPIEXEC=$(pwd)/mpirun_oversubsribe
+      MPIEXEC=$(pwd)/mpirun_oversubscribe
     fi
 
   #################################################################

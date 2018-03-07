@@ -23,6 +23,7 @@ cache:
     - ${TRAVIS_BUILD_DIR}/deps/eckit
     - ${TRAVIS_BUILD_DIR}/deps/fckit
 
+
 matrix:
   exclude:
 
@@ -30,13 +31,13 @@ matrix:
 
   include:
 
-    # - os: linux
-    #   compiler: clang
-    #   env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='mpich'
+    - os: linux
+      compiler: clang
+      env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='mpich'
 
-    # - os: linux
-    #   compiler: clang
-    #   env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='openmpi'
+    - os: linux
+      compiler: clang
+      env: CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran' MPI='openmpi'
 
     - os: osx
       env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' MPI=openmpi
@@ -49,7 +50,7 @@ install:
   #################################################################
   - |
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-      brew cask uninstall oclint # Prevent conflict with gcc
+      brew list oclint || brew cask uninstall oclint # Prevent conflict with gcc
       brew upgrade gcc || brew install gcc
     fi
     which gcc

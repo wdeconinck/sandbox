@@ -43,18 +43,14 @@ matrix:
       env: CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran' MPI=openmpi CACHE_NAME=osx-clang-openmpi
       osx_image: xcode9
 
-install:
-
+before_install:
   #################################################################
-  # Install Fortran
+  # Fixes to pre-installed packages
   #################################################################
   - |
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew list oclint || brew cask uninstall oclint # Prevent conflict with gcc
-      brew upgrade gcc || brew install gcc
     fi
-    which gcc
-    which gfortran
 
   #################################################################
   # Set compilers
@@ -64,11 +60,31 @@ install:
     export CXX=${CXX_COMPILER}
     export FC=${Fortran_COMPILER}
 
+install:
+
   #################################################################
   # All dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/
   #################################################################
   - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
   - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+
+  #################################################################
+  # Install Fortran
+  #################################################################
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+      brew upgrade gcc || brew install gcc
+    fi
+    which gcc
+    which gfortran
+
+  #################################################################
+  # Install CGAL
+  #################################################################
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+      brew upgrade cgal || brew install cgal
+    fi
 
   #################################################################
   # Install MPI

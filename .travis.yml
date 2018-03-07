@@ -116,8 +116,19 @@ install:
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew upgrade gcc || brew install gcc
     fi
+  - |
     if [[ "${PGI_VERSION:-notset}" == "CommunityEdition" ]]; then
-      ${TRAVIS_BUILD_DIR}/install-pgi.sh
+      ${TRAVIS_BUILD_DIR}/install-pgi.sh --mpi
+      PGI_INSTALL_DIR=${HOME}/pgi
+      PGI_VERSION=$(basename "${PGI_INSTALL_DIR}"/linux86-64/*.*/)
+      PGI_DIR=${PGI_INSTALL_DIR}/linux86-64/${PGI_VERSION}
+      export PATH=${PGI_DIR}/bin:${PATH}
+      export MPI_HOME=${PGI_DIR}/mpi/openmpi
+      export PATH=${MPI_HOME}/bin:${PATH}
+      ls ${PGI_DIR}
+      ls ${PGI_DIR}/bin
+      ls ${MPI_HOME}
+      ls ${MPI_HOME}/bin
     fi
 
 
@@ -133,20 +144,23 @@ install:
   # Install MPI
   #################################################################
   - |
-    ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      export MPI_HOME=${DEPS_DIR}/${MPI}
-      export PATH=${MPI_HOME}/bin:${PATH}
+    if [ -z ${MPI_HOME+x} ]; then
+      ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
+      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        export MPI_HOME=${DEPS_DIR}/${MPI}
+        export PATH=${MPI_HOME}/bin:${PATH}
+      fi
     fi
-  - |
-    MPIEXEC=$(which mpirun)
-    if [[ "${TRAVIS_OS_NAME}" == "osx" && "${MPI}" == "openmpi" ]]; then
-      cat > mpirun_oversubscribe << "EOF"
-      mpirun --oversubscribe
-      EOF
-      chmod 777 mpirun_oversubscribe
-      MPIEXEC=$(pwd)/mpirun_oversubscribe
-    fi
+
+  # - |
+  #   MPIEXEC=$(which mpirun)
+  #   if [[ "${TRAVIS_OS_NAME}" == "osx" && "${MPI}" == "openmpi" ]]; then
+  #     cat > mpirun_oversubscribe << "EOF"
+  #     mpirun --oversubscribe
+  #     EOF
+  #     chmod 777 mpirun_oversubscribe
+  #     MPIEXEC=$(pwd)/mpirun_oversubscribe
+  #   fi
 
   #################################################################
   # Install CMake

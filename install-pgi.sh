@@ -24,6 +24,7 @@ export PGI_INSTALL_MPI=false
 export PGI_MPI_GPU_SUPPORT=false
 export PGI_INSTALL_MANAGED=false
 
+
 VERBOSE=false
 
 while [ $# != 0 ]; do

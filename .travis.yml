@@ -10,6 +10,7 @@ matrix:
 
 cache:
   directories:
+    - ${TRAVIS_BUILD_DIR}/deps/cmake
     - ${TRAVIS_BUILD_DIR}/deps/openmpi
     - ${TRAVIS_BUILD_DIR}/deps/mpich
     - ${TRAVIS_BUILD_DIR}/deps/eckit
@@ -159,13 +160,15 @@ install:
   - |
     ### Install CMake
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz"
-      mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+      if [[ -z "$(ls -A ${DEPS_DIR/cmake})" ]]; then
+        CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz"
+        mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+      fi
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
     else
       brew upgrade cmake || brew install cmake
     fi
-  - cmake --version
+    cmake --version
 
   #################################################################
   # Install ecbuild
@@ -174,6 +177,7 @@ install:
     ### Install ecbuild
     git clone -b master https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
     export PATH=${DEPS_DIR}/ecbuild/bin:${PATH}
+    ecbuild --version
 
   #################################################################
   # Install eckit

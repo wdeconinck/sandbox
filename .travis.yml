@@ -191,7 +191,7 @@ install:
     export ECKIT_PATH=${DEPS_DIR}/eckit
     ECKIT_SHA=$(github-sha.sh ecmwf eckit master)
     if [[ -f ${ECKIT_PATH}/sha-${ECKIT_SHA} ]]; then
-      echo "Cached eckit is up to date."
+      echo "Cached eckit is up to date, sha-${ECKIT_SHA}"
     else
       if ls ${ECKIT_PATH}/sha-* 1> /dev/null 2>&1; then
          echo "Cached eckit $(ls -1 ${ECKIT_PATH}/sha-*) is out of date."
@@ -206,7 +206,7 @@ install:
       make -j4 install
       touch ${ECKIT_PATH}/sha-${ECKIT_SHA}
     fi
-    ${ECKIT_PATH}/bin/eckit_version
+    echo "eckit version - $(${ECKIT_PATH}/bin/eckit_version)"
 
   #################################################################
   # Install fckit
@@ -214,7 +214,7 @@ install:
   - |
     ### Install fckit
     export FCKIT_PATH=${DEPS_DIR}/fckit
-    fCKIT_SHA=$(github-sha.sh ecmwf fckit master)
+    FCKIT_SHA=$(github-sha.sh ecmwf fckit master)
     if [[ -f ${FCKIT_PATH}/sha-${FCKIT_SHA} ]]; then
       echo "Cached fckit is up to date."
     else

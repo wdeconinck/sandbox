@@ -38,7 +38,7 @@ case "$os" in
                   rm mpich-${MPICHVER}.tar.gz
                   echo "Configuring and building mpich..."
                   cd mpich-${MPICHVER}
-                  ./configure \
+                  ${TRAVIS_WAIT} ./configure \
                           --prefix=$(pwd)/../mpich \
                           --enable-static=false \
                           --enable-alloca=true \
@@ -47,8 +47,8 @@ case "$os" in
                           --enable-fast=all \
                           --enable-g=none \
                           --enable-timing=none > /dev/null 2>&1
-                  make -j8  > /dev/null 2>&1
-                  make install > /dev/null 2>&1
+                  ${TRAVIS_WAIT} make -j8  > /dev/null 2>&1
+                  ${TRAVIS_WAIT} make install > /dev/null 2>&1
                   cd -
                 fi
                 ;;
@@ -65,10 +65,10 @@ case "$os" in
                   rm $OMPIVER.tar.gz
                   echo "Configuring and building openmpi..."
                   cd $OMPIVER
-                  ./configure \
+                  ${TRAVIS_WAIT} ./configure \
                           --prefix=$(pwd)/../openmpi > /dev/null 2>&1
-                  make -j8 > /dev/null 2>&1
-                  make install > /dev/null 2>&1
+                  ${TRAVIS_WAIT} make -j8 > /dev/null 2>&1
+                  ${TRAVIS_WAIT} make install > /dev/null 2>&1
                   cd -
                 fi
                 ;;

@@ -147,7 +147,8 @@ install:
   - |
     ### Install MPI
     if [ -z ${MPI_HOME+x} ]; then
-      travis_wait 25 ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
+      export TRAVIS_WAIT="travis_wait 25"
+      ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
         export MPI_HOME=${DEPS_DIR}/${MPI}
         export PATH=${MPI_HOME}/bin:${PATH}

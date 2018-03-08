@@ -189,6 +189,7 @@ install:
   - github-sha.sh ecmwf eckit master
   - VVV=$(github-sha.sh ecmwf eckit master)
   - echo $VVV
+  - wget -qO- https://api.github.com/repos/ecmwf/eckit/branches/master
   - |
     ### Install eckit
     export ECKIT_PATH=${DEPS_DIR}/eckit

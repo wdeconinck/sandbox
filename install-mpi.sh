@@ -47,8 +47,8 @@ case "$os" in
                           --enable-fast=all \
                           --enable-g=none \
                           --enable-timing=none
-                  ${TRAVIS_WAIT} make -j8
-                  ${TRAVIS_WAIT} make install
+                  make -j8
+                  make install
                   cd -
                 fi
                 ;;
@@ -65,11 +65,10 @@ case "$os" in
                   rm $OMPIVER.tar.gz
                   echo "Configuring and building openmpi..."
                   cd $OMPIVER
-                  echo ${TRAVIS_WAIT}
-                  ${TRAVIS_WAIT} ./configure \
+                  ./configure \
                           --prefix=$(pwd)/../openmpi
-                  ${TRAVIS_WAIT} make -j8
-                  ${TRAVIS_WAIT} make install
+                  make -j8
+                  make install
                   cd -
                 fi
                 ;;

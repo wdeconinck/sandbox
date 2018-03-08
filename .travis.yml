@@ -199,7 +199,7 @@ install:
       FCKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/fckit
       git clone -b master https://github.com/ecmwf/fckit ${FCKIT_SOURCE_DIR}
       mkdir -p ${FCKIT_BUILD_DIR} && cd ${FCKIT_BUILD_DIR}
-      ecbuild --build=debug --prefix=${FCKIT_PATH} -- -DENABLE_TESTS=OFF ${FCKIT_SOURCE_DIR}
+      ecbuild --build=debug --prefix=${FCKIT_PATH} -- -DENABLE_TESTS=ON ${FCKIT_SOURCE_DIR}
       make -j8 install
     fi
 

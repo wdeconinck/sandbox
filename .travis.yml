@@ -186,12 +186,15 @@ install:
   #################################################################
   # Install eckit
   #################################################################
+  - github-sha.sh ecmwf eckit master
+  - VVV=$(github-sha.sh ecmwf eckit master)
+  - echo $VVV
   - |
     ### Install eckit
     export ECKIT_PATH=${DEPS_DIR}/eckit
     ECKIT_SHA=$(github-sha.sh ecmwf eckit master)
     if [[ -f ${ECKIT_PATH}/sha-${ECKIT_SHA} ]]; then
-      echo "Cached eckit is up to date, sha-${ECKIT_SHA}"
+      echo "Cached eckit is up to date, sha-${ECKIT_SHA} ."
     else
       if ls ${ECKIT_PATH}/sha-* 1> /dev/null 2>&1; then
          echo "Cached eckit $(ls -1 ${ECKIT_PATH}/sha-*) is out of date."
@@ -216,7 +219,7 @@ install:
     export FCKIT_PATH=${DEPS_DIR}/fckit
     FCKIT_SHA=$(github-sha.sh ecmwf fckit master)
     if [[ -f ${FCKIT_PATH}/sha-${FCKIT_SHA} ]]; then
-      echo "Cached fckit is up to date."
+      echo "Cached fckit is up to date, sha-${FCKIT_SHA} ."
     else
       if ls ${FCKIT_PATH}/sha-* 1> /dev/null 2>&1; then
          echo "Cached fckit $(ls -1 ${FCKIT_PATH}/sha-*) is out of date."

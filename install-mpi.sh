@@ -42,7 +42,7 @@ case "$os" in
                   echo "Configuring and building mpich..."
                   cd mpich-${MPICHVER}
                   ${SCRIPTDIR}/no-output.sh ./configure \
-                          --prefix=$(pwd)/../mpich \
+                          --prefix=$(realpath ../mpich) \
                           --enable-static=false \
                           --enable-alloca=true \
                           --enable-threads=single \
@@ -69,7 +69,7 @@ case "$os" in
                   echo "Configuring and building openmpi..."
                   cd $OMPIVER
                   ${SCRIPTDIR}/no-output.sh ./configure \
-                          --prefix=$(pwd)/../openmpi
+                          --prefix=$(realpath ../openmpi)
                   ${SCRIPTDIR}/no-output.sh make -j8
                   ${SCRIPTDIR}/no-output.sh make install
                   cd -

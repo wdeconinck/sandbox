@@ -117,10 +117,12 @@ install:
   # Install Compilers
   #################################################################
   - |
+    ### Install gcc (homebrew)
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew upgrade gcc || brew install gcc
     fi
   - |
+    ### Install PGI community edition
     if [[ "${PGI_VERSION:-notset}" == "CommunityEdition" ]]; then
       ${TRAVIS_BUILD_DIR}/install-pgi.sh --mpi
       PGI_INSTALL_DIR=${HOME}/pgi
@@ -137,6 +139,7 @@ install:
   # Install CGAL
   #################################################################
   - |
+    ### Install CGAL
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew upgrade cgal || brew install cgal
     fi
@@ -145,6 +148,7 @@ install:
   # Install MPI
   #################################################################
   - |
+    ### Install MPI
     if [ -z ${MPI_HOME+x} ]; then
       ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
@@ -157,6 +161,7 @@ install:
   # Install CMake
   #################################################################
   - |
+    ### Install CMake
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
       CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz"
       mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
@@ -170,6 +175,7 @@ install:
   # Install ecbuild
   #################################################################
   - |
+    ### Install ecbuild
     git clone -b master https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
     export PATH=${DEPS_DIR}/ecbuild/bin:${PATH}
 
@@ -177,6 +183,7 @@ install:
   # Install eckit
   #################################################################
   - |
+    ### Install eckit
     #rm -rf ${DEPS_DIR}/eckit
     export ECKIT_PATH=${DEPS_DIR}/eckit
     if [[ -z "$(ls -A ${ECKIT_PATH})" ]]; then
@@ -192,6 +199,7 @@ install:
   # Install fckit
   #################################################################
   - |
+    ### Install fckit
     #rm -rf ${DEPS_DIR}/fckit
     export FCKIT_PATH=${DEPS_DIR}/fckit
     if [[ -z "$(ls -A ${FCKIT_PATH})" ]]; then

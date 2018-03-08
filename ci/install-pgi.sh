@@ -100,7 +100,7 @@ export PATH=\${PGI_DIR}/bin:\${PATH}
 EOF
 
 if ${PGI_INSTALL_MPI} ; then
-cat >> ${PGI_INSTALL_DIR}/load.sh << EOF
+cat >> ${PGI_INSTALL_DIR}/env.sh << EOF
 
 ### MPI
 export MPI_HOME=\${PGI_DIR}/mpi/openmpi

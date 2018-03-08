@@ -4,21 +4,28 @@ owner=$1
 repo=$2
 branch=$3
 
-n=0
-until [ $n -ge 5 ]; do
-  wget -qO- https://api.github.com/repos/${owner}/${repo}/branches/${branch} | python -c '
-import json, sys
-try:
-  input=sys.stdin.read()
-  obj=json.loads(input)
-  head_tree_sha = obj["commit"]["sha"]
-  print(head_tree_sha)
-except:
-  sys.exit(1)
-' && break
-  n=$[$n+1]
-  sleep 1
-done
+git clone --depth 1 -b ${branch} git@github.com:${owner}/${repo} tmp-$repo &> /dev/null
+cd tmp-$repo;
+git rev-parse HEAD
+cd ..
+rm -rf tmp-$repo
+
+#
+# n=0
+# until [ $n -ge 5 ]; do
+#   wget -qO- https://api.github.com/repos/${owner}/${repo}/branches/${branch} | python -c '
+# import json, sys
+# try:
+#   input=sys.stdin.read()
+#   obj=json.loads(input)
+#   head_tree_sha = obj["commit"]["sha"]
+#   print(head_tree_sha)
+# except:
+#   sys.exit(1)
+# ' && break
+#   n=$[$n+1]
+#   sleep 1
+# done
 
 #!/bin/bash
 # # Abort on Error

@@ -23,16 +23,16 @@ matrix:
 
   include:
 
-    - os: linux
-      compiler: clang
-      env: 
-        - CACHE_NAME=linux-clang38-mpich
-        - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
-        - MPI='mpich'
-      addons: &clang38
-        apt:
-          sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
-          packages: ['clang-3.8', 'gfortran']
+    # - os: linux
+    #   compiler: clang
+    #   env: 
+    #     - CACHE_NAME=linux-clang38-mpich
+    #     - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+    #     - MPI='mpich'
+    #   addons: &clang38
+    #     apt:
+    #       sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
+    #       packages: ['clang-3.8', 'gfortran']
 
     - os: linux
       compiler: clang
@@ -42,16 +42,16 @@ matrix:
         - MPI='openmpi'
       addons: *clang38
 
-    - os: linux
-      compiler: gcc
-      env: 
-        - CACHE_NAME=linux-gcc5-mpich
-        - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
-        - MPI='mpich' 
-      addons: &gcc5
-        apt:
-          sources:  ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'gcc-5', 'gfortran-5']
+    # - os: linux
+    #   compiler: gcc
+    #   env: 
+    #     - CACHE_NAME=linux-gcc5-mpich
+    #     - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
+    #     - MPI='mpich' 
+    #   addons: &gcc5
+    #     apt:
+    #       sources:  ['ubuntu-toolchain-r-test']
+    #       packages: ['g++-5', 'gcc-5', 'gfortran-5']
 
     - os: linux
       compiler: gcc
@@ -61,27 +61,27 @@ matrix:
         - MPI='openmpi'
       addons: *gcc5
 
-    - os: linux
-      compiler: gcc
-      env:
-        - CACHE_NAME=linux-pgi-openmpi
-        - CXX_COMPILER='pgc++' C_COMPILER='pgcc' Fortran_COMPILER='pgfortran'
-        - MPI='openmpi'
-        - PGI_VERSION="CommunityEdition"
+    # - os: linux
+    #   compiler: gcc
+    #   env:
+    #     - CACHE_NAME=linux-pgi-openmpi
+    #     - CXX_COMPILER='pgc++' C_COMPILER='pgcc' Fortran_COMPILER='pgfortran'
+    #     - MPI='openmpi'
+    #     - PGI_VERSION="CommunityEdition"
 
-    - os: osx
-      env: 
-        - CACHE_NAME=osx-clang-mpich
-        - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
-        - MPI=mpich
-      osx_image: xcode9
+    # - os: osx
+    #   env: 
+    #     - CACHE_NAME=osx-clang-mpich
+    #     - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
+    #     - MPI=mpich
+    #   osx_image: xcode9
 
-    - os: osx
-      env: 
-        - CACHE_NAME=osx-clang-openmpi
-        - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
-        - MPI=openmpi
-      osx_image: xcode9
+    # - os: osx
+    #   env: 
+    #     - CACHE_NAME=osx-clang-openmpi
+    #     - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
+    #     - MPI=openmpi
+    #   osx_image: xcode9
 
 before_install:
   #################################################################
@@ -102,10 +102,6 @@ before_install:
     export FC=${Fortran_COMPILER}
 
 install:
-
-  - find /opt -iname librt*
-  - find /usr/lib -iname librt*
-  - find /usr/local -iname librt*
 
   #################################################################
   # All dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/
@@ -150,7 +146,7 @@ install:
   - |
     ### Install MPI
     if [ -z ${MPI_HOME+x} ]; then
-      ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
+      travis_wait 25 ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
       if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
         export MPI_HOME=${DEPS_DIR}/${MPI}
         export PATH=${MPI_HOME}/bin:${PATH}

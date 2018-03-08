@@ -46,7 +46,7 @@ case "$os" in
                           --enable-fortran=yes \
                           --enable-fast=all \
                           --enable-g=none \
-                          --enable-timing=none
+                          --enable-timing=none > /dev/null 2>&1
                   make -j8  > /dev/null 2>&1
                   make install > /dev/null 2>&1
                   cd -
@@ -66,7 +66,7 @@ case "$os" in
                   echo "Configuring and building openmpi..."
                   cd $OMPIVER
                   ./configure \
-                          --prefix=$(pwd)/../openmpi
+                          --prefix=$(pwd)/../openmpi > /dev/null 2>&1
                   make -j8 > /dev/null 2>&1
                   make install > /dev/null 2>&1
                   cd -

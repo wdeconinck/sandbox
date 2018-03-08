@@ -8,9 +8,13 @@ n=0
 until [ $n -ge 5 ]; do
   wget -qO- https://api.github.com/repos/${owner}/${repo}/branches/${branch} | python -c '
 import json, sys
-obj=json.load(sys.stdin)
-head_tree_sha = obj["commit"]["sha"]
-print(head_tree_sha)
+try:
+  input=sys.stdin.read()
+  obj=json.loads(input)
+  head_tree_sha = obj["commit"]["sha"]
+  print(head_tree_sha)
+except:
+  sys.exit(1)
 ' && break
   n=$[$n+1]
   sleep 1

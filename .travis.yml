@@ -196,14 +196,22 @@ install:
   - |
     ### Install eckit
     export ECKIT_PATH=${DEPS_DIR}/eckit
-    rm -rf ${ECKIT_PATH}
-    if [[ -z "$(ls -A ${ECKIT_PATH})" ]]; then
+    ECKIT_SHA=$(${TRAVIS_BUILD_DIR}/get-sha.sh ecmwf eckit master)
+    if [[ -f ${ECKIT_PATH}/sha-${ECKIT_SHA} ]]; then
+      echo "Cached eckit is up to date."
+    else
+      if ls ${ECKIT_PATH}/sha-* 1> /dev/null 2>&1; then
+         echo "Cached eckit $(ls -1 ${ECKIT_PATH}/sha-*) is out of date."
+      fi
+      echo "Installing eckit sha-${ECKIT_SHA}"
+      rm -rf ${ECKIT_PATH}
       ECKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/eckit
       ECKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/eckit
       git clone -b master https://github.com/ecmwf/eckit ${ECKIT_SOURCE_DIR}
       mkdir -p ${ECKIT_BUILD_DIR} && cd ${ECKIT_BUILD_DIR}
       ecbuild --build=debug --prefix=${ECKIT_PATH} -- ${ECKIT_CMAKE_OPTIONS} -DENABLE_TESTS=OFF ${ECKIT_SOURCE_DIR}
       make -j8 install
+      touch ${ECKIT_PATH}/sha-${ECKIT_SHA}
     fi
 
   #################################################################

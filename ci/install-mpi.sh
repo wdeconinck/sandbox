@@ -102,9 +102,12 @@ case "$os" in
 esac
 
 
-if ${MPI_INSTALLED}; then
+if ${MPI_INSTALLED} ; then
 cat > ${PREFIX}/env.sh << "EOF"
 export MPI_HOME=${PREFIX}
 export PATH=\${MPI_HOME}/bin:\${PATH}
 EOF
 fi
+
+echo "Please source ${PREFIX}/env.sh, containing:"
+cat ${PREFIX}/env.sh

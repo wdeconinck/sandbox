@@ -204,7 +204,7 @@ install:
       ECKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/eckit
       git clone --depth 1 -b master https://github.com/ecmwf/eckit ${ECKIT_SOURCE_DIR}
       mkdir -p ${ECKIT_BUILD_DIR} && cd ${ECKIT_BUILD_DIR}
-      ecbuild --build=debug --prefix=${ECKIT_PATH} -- ${ECKIT_CMAKE_OPTIONS} -DENABLE_TESTS=OFF ${ECKIT_SOURCE_DIR}
+      ecbuild --build=debug --prefix=${ECKIT_PATH} -- ${ECKIT_CMAKE_OPTIONS} -DENABLE_TESTS=OFF -DENABLE_MPI=ON ${ECKIT_SOURCE_DIR}
       make -j4 install
       touch ${ECKIT_PATH}/sha-${ECKIT_SHA}
     fi

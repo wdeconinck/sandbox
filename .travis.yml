@@ -230,6 +230,7 @@ install:
       mkdir -p ${FCKIT_BUILD_DIR} && cd ${FCKIT_BUILD_DIR}
       ecbuild --build=debug --prefix=${FCKIT_PATH} -- -DENABLE_TESTS=ON ${FCKIT_SOURCE_DIR}
       make -j4 install
+      touch ${FCKIT_PATH}/sha-${FCKIT_SHA}
     fi
 
   - cd ${TRAVIS_BUILD_DIR}

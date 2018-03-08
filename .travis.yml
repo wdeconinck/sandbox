@@ -24,50 +24,50 @@ matrix:
 
   include:
 
-    - os: linux
-      compiler: clang
-      env: 
-        - CACHE_NAME=linux-clang38-mpich
-        - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
-        - MPI='mpich'
-      addons: &clang38
-        apt:
-          sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
-          packages: ['clang-3.8', 'gfortran']
+    # - os: linux
+    #   compiler: clang
+    #   env:
+    #     - CACHE_NAME=linux-clang38-mpich
+    #     - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+    #     - MPI='mpich'
+    #   addons: &clang38
+    #     apt:
+    #       sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
+    #       packages: ['clang-3.8', 'gfortran']
 
-    - os: linux
-      compiler: clang
-      env:
-        - CACHE_NAME=linux-clang38-openmpi
-        - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
-        - MPI='openmpi'
-      addons:
-         apt:
-           sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
-           packages: ['clang-3.8', 'gfortran']
+    # - os: linux
+    #   compiler: clang
+    #   env:
+    #     - CACHE_NAME=linux-clang38-openmpi
+    #     - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+    #     - MPI='openmpi'
+    #   addons:
+    #      apt:
+    #        sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
+    #        packages: ['clang-3.8', 'gfortran']
 
 
-    - os: linux
-      compiler: gcc
-      env:
-        - CACHE_NAME=linux-gcc5-mpich
-        - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
-        - MPI='mpich'
-      addons: &gcc5
-        apt:
-          sources:  ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'gcc-5', 'gfortran-5']
+    # - os: linux
+    #   compiler: gcc
+    #   env:
+    #     - CACHE_NAME=linux-gcc5-mpich
+    #     - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
+    #     - MPI='mpich'
+    #   addons: &gcc5
+    #     apt:
+    #       sources:  ['ubuntu-toolchain-r-test']
+    #       packages: ['g++-5', 'gcc-5', 'gfortran-5']
 
-    - os: linux
-      compiler: gcc
-      env:
-        - CACHE_NAME=linux-gcc5-openmpi
-        - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
-        - MPI='openmpi'
-      addons:
-        apt:
-          sources:  ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'gcc-5', 'gfortran-5']
+    # - os: linux
+    #   compiler: gcc
+    #   env:
+    #     - CACHE_NAME=linux-gcc5-openmpi
+    #     - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
+    #     - MPI='openmpi'
+    #   addons:
+    #     apt:
+    #       sources:  ['ubuntu-toolchain-r-test']
+    #       packages: ['g++-5', 'gcc-5', 'gfortran-5']
 
 
     - os: linux
@@ -78,19 +78,19 @@ matrix:
         - MPI='openmpi'
         - PGI_VERSION="CommunityEdition"
 
-    - os: osx
-      env:
-        - CACHE_NAME=osx-clang-mpich
-        - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
-        - MPI=mpich
-      osx_image: xcode9
+    # - os: osx
+    #   env:
+    #     - CACHE_NAME=osx-clang-mpich
+    #     - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
+    #     - MPI=mpich
+    #   osx_image: xcode9
 
-    - os: osx
-      env: 
-        - CACHE_NAME=osx-clang-openmpi
-        - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
-        - MPI=openmpi
-      osx_image: xcode9
+    # - os: osx
+    #   env:
+    #     - CACHE_NAME=osx-clang-openmpi
+    #     - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
+    #     - MPI=openmpi
+    #   osx_image: xcode9
 
 before_install:
   #################################################################
@@ -138,7 +138,7 @@ install:
       export PATH=${PGI_DIR}/bin:${PATH}
       export MPI_HOME=${PGI_DIR}/mpi/openmpi
       export PATH=${MPI_HOME}/bin:${PATH}
-      CMAKE_OPTIONS="-DRT_LIB=/usr/lib/x86_64-linux-gnu/librt.so"
+      CMAKE_OPTIONS="-DRT_LIB=/usr/lib/x86_64-linux-gnu/librt.so -DCURSES_LIBRARIES=/usr/lib/x85_64-linux-gnu/libcurses.so"
     fi
 
 
@@ -173,7 +173,7 @@ install:
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
       if [[ -z "$(ls -A ${DEPS_DIR}/cmake)" ]]; then
         CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz"
-        mkdir cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake
+        mkdir -p ${DEPS_DIR}/cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
       fi
       export PATH=${DEPS_DIR}/cmake/bin:${PATH}
     else
@@ -196,6 +196,7 @@ install:
   - |
     ### Install eckit
     export ECKIT_PATH=${DEPS_DIR}/eckit
+    rm -rf ${ECKIT_PATH}
     if [[ -z "$(ls -A ${ECKIT_PATH})" ]]; then
       ECKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/eckit
       ECKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/eckit

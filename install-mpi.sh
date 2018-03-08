@@ -1,6 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 MPI_IMPL="$1"
 os=`uname`
 OMPIVER=openmpi-3.0.0
@@ -38,7 +41,7 @@ case "$os" in
                   rm mpich-${MPICHVER}.tar.gz
                   echo "Configuring and building mpich..."
                   cd mpich-${MPICHVER}
-                  ${TRAVIS_WAIT} ./configure \
+                  ${SCRIPTDIR}/no-output.sh ./configure \
                           --prefix=$(pwd)/../mpich \
                           --enable-static=false \
                           --enable-alloca=true \
@@ -47,8 +50,8 @@ case "$os" in
                           --enable-fast=all \
                           --enable-g=none \
                           --enable-timing=none
-                  make -j8
-                  make install
+                  ${SCRIPTDIR}/no-output.sh make -j8
+                  ${SCRIPTDIR}/no-output.sh make install
                   cd -
                 fi
                 ;;
@@ -65,10 +68,10 @@ case "$os" in
                   rm $OMPIVER.tar.gz
                   echo "Configuring and building openmpi..."
                   cd $OMPIVER
-                  ./configure \
+                  ${SCRIPTDIR}/no-output.sh ./configure \
                           --prefix=$(pwd)/../openmpi
-                  make -j8
-                  make install
+                  ${SCRIPTDIR}/no-output.sh make -j8
+                  ${SCRIPTDIR}/no-output.sh make install
                   cd -
                 fi
                 ;;

@@ -49,10 +49,10 @@ matrix:
 
     - os: linux
       compiler: gcc
-      env: 
+      env:
         - CACHE_NAME=linux-gcc5-mpich
         - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
-        - MPI='mpich' 
+        - MPI='mpich'
       addons: &gcc5
         apt:
           sources:  ['ubuntu-toolchain-r-test']
@@ -79,7 +79,7 @@ matrix:
         - PGI_VERSION="CommunityEdition"
 
     - os: osx
-      env: 
+      env:
         - CACHE_NAME=osx-clang-mpich
         - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
         - MPI=mpich

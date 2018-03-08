@@ -40,9 +40,10 @@ case "$os" in
                   tar xfz mpich-${MPICHVER}.tar.gz
                   rm mpich-${MPICHVER}.tar.gz
                   echo "Configuring and building mpich..."
+                  PREFIX=$(pwd)/mpich
                   cd mpich-${MPICHVER}
                   ${SCRIPTDIR}/no-output.sh ./configure \
-                          --prefix=$(realpath ../mpich) \
+                          --prefix=${PREFIX} \
                           --enable-static=false \
                           --enable-alloca=true \
                           --enable-threads=single \
@@ -67,9 +68,10 @@ case "$os" in
                   tar -zxf $OMPIVER.tar.gz
                   rm $OMPIVER.tar.gz
                   echo "Configuring and building openmpi..."
+                  PREFIX=$(pwd)/openmpi
                   cd $OMPIVER
                   ${SCRIPTDIR}/no-output.sh ./configure \
-                          --prefix=$(realpath ../openmpi)
+                          --prefix=${PREFIX}
                   ${SCRIPTDIR}/no-output.sh make -j8
                   ${SCRIPTDIR}/no-output.sh make install
                   cd -

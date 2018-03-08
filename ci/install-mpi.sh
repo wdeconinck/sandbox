@@ -4,9 +4,6 @@ set -e
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-if
-
-
 MPI="$1"
 os=$(uname)
 OMPIVER=openmpi-3.0.0
@@ -36,8 +33,9 @@ case "$os" in
     ;;
 
     Linux)
-        if [ -z "${MPI_HOME}" ]; then
-          echo "MPI is already installed at ${MPI_HOME}. Not taking any action"
+        if [ -n "${MPI_HOME}" ]; then
+          echo "MPI is already installed at MPI_HOME=${MPI_HOME}."
+          echo "Not taking any action."
           exit 0
         fi
         case "$MPI" in

@@ -186,15 +186,13 @@ install:
   #################################################################
   - |
     ### Install ecbuild
-    git clone -b master https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
+    git clone --depth 1 -b master https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
     export PATH=${DEPS_DIR}/ecbuild/bin:${PATH}
     ecbuild --version
 
   #################################################################
   # Install eckit
   #################################################################
-  - ${TRAVIS_BUILD_DIR}/play-sed.sh ecmwf eckit master
-
   - |
     ### Install eckit
     export ECKIT_PATH=${DEPS_DIR}/eckit
@@ -209,7 +207,7 @@ install:
       rm -rf ${ECKIT_PATH}
       ECKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/eckit
       ECKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/eckit
-      git clone -b master https://github.com/ecmwf/eckit ${ECKIT_SOURCE_DIR}
+      git clone --depth 1 -b master https://github.com/ecmwf/eckit ${ECKIT_SOURCE_DIR}
       mkdir -p ${ECKIT_BUILD_DIR} && cd ${ECKIT_BUILD_DIR}
       ecbuild --build=debug --prefix=${ECKIT_PATH} -- ${ECKIT_CMAKE_OPTIONS} -DENABLE_TESTS=OFF ${ECKIT_SOURCE_DIR}
       make -j8 install
@@ -223,7 +221,15 @@ install:
   - |
     ### Install fckit
     export FCKIT_PATH=${DEPS_DIR}/fckit
-    if [[ -z "$(ls -A ${FCKIT_PATH})" ]]; then
+    fCKIT_SHA=$(${TRAVIS_BUILD_DIR}/get-sha.sh ecmwf fckit master)
+    if [[ -f ${FCKIT_PATH}/sha-${FCKIT_SHA} ]]; then
+      echo "Cached fckit is up to date."
+    else
+      if ls ${FCKIT_PATH}/sha-* 1> /dev/null 2>&1; then
+         echo "Cached fckit $(ls -1 ${FCKIT_PATH}/sha-*) is out of date."
+      fi
+      echo "Installing fckit sha-${FCKIT_SHA}"
+      rm -rf ${FCKIT_PATH}
       FCKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/fckit
       FCKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/fckit
       git clone -b master https://github.com/ecmwf/fckit ${FCKIT_SOURCE_DIR}
@@ -236,8 +242,6 @@ install:
 
 script:
 
-  - echo "hello"
-
   - |
     ATLAS_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/atlas
     ATLAS_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/atlas
@@ -245,7 +249,7 @@ script:
   #################################################################
   # Download Atlas
   #################################################################
-  - git clone -b master https://github.com/ecmwf/atlas ${ATLAS_SOURCE_DIR}
+  - git clone --depth 1 -b master https://github.com/ecmwf/atlas ${ATLAS_SOURCE_DIR}
 
   #################################################################
   # Build Atlas

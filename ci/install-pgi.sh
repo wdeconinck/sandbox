@@ -89,7 +89,7 @@ cd "${TEMPORARY_FILES}"/install_components && ./install
 PGI_VERSION=$(basename "${PGI_INSTALL_DIR}"/linux86-64/*.*/)
 
 
-cat > ${PGI_INSTALL_DIR}/load.sh << EOF
+cat > ${PGI_INSTALL_DIR}/env.sh << EOF
 ### Variables
 PGI_INSTALL_DIR=${PGI_INSTALL_DIR}
 PGI_VERSION=${PGI_VERSION}

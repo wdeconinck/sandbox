@@ -68,10 +68,6 @@ matrix:
         - CXX_COMPILER='pgc++' C_COMPILER='pgcc' Fortran_COMPILER='pgfortran'
         - MPI='openmpi'
         - PGI_VERSION="CommunityEdition"
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['libncurses5-dev']
 
     # - os: osx
     #   env: 
@@ -106,6 +102,11 @@ before_install:
     export FC=${Fortran_COMPILER}
 
 install:
+
+  - find /opt -iname librt*
+  - find /usr/lib -iname librt*
+  - find /usr/lib64 -iname librt*
+  - find /usr/local -iname librt*
 
   #################################################################
   # All dependencies are installed in ${TRAVIS_BUILD_DIR}/deps/

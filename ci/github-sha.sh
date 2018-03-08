@@ -4,12 +4,17 @@ owner=$1
 repo=$2
 branch=$3
 
-wget -qO- https://api.github.com/repos/${owner}/${repo}/branches/${branch} | python -c '
+n=0
+until [ $n -ge 5 ]; do
+  wget -qO- https://api.github.com/repos/${owner}/${repo}/branches/${branch} | python -c '
 import json, sys
 obj=json.load(sys.stdin)
 head_tree_sha = obj["commit"]["sha"]
 print(head_tree_sha)
-'
+' && break
+  n=$[$n+1]
+  sleep 1
+done
 
 #!/bin/bash
 # # Abort on Error

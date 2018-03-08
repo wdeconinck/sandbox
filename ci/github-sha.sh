@@ -20,7 +20,7 @@ trap 'error_handler' ERR
 BUILD_OUTPUT=$(pwd)/tmp-${repo}.log
 touch $BUILD_OUTPUT
 
-git clone --depth=1 -b ${branch} git@github.com:${owner}/${repo} tmp-${repo} >> $BUILD_OUTPUT 2>&1 
+git clone --depth=1 -b ${branch} https://github.com/${owner}/${repo} tmp-${repo} >> $BUILD_OUTPUT 2>&1 
 cd tmp-${repo} >> $BUILD_OUTPUT 2>&1 
 git rev-parse HEAD
 cd ..

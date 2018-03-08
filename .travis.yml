@@ -120,143 +120,148 @@ install:
   - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
   - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
 
-  #################################################################
-  # Install Compilers
-  #################################################################
-  - |
-    ### Install gcc (homebrew)
-    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-      brew upgrade gcc || brew install gcc
-    fi
-  - |
-    ### Install PGI community edition
-    if [[ "${PGI_VERSION:-notset}" == "CommunityEdition" ]]; then
-      ${TRAVIS_BUILD_DIR}/install-pgi.sh --mpi
-      PGI_INSTALL_DIR=${HOME}/pgi
-      PGI_VERSION=$(basename "${PGI_INSTALL_DIR}"/linux86-64/*.*/)
-      PGI_DIR=${PGI_INSTALL_DIR}/linux86-64/${PGI_VERSION}
-      export PATH=${PGI_DIR}/bin:${PATH}
-      export MPI_HOME=${PGI_DIR}/mpi/openmpi
-      export PATH=${MPI_HOME}/bin:${PATH}
-      ECKIT_CMAKE_OPTIONS="-DRT_LIB=/usr/lib/x86_64-linux-gnu/librt.so -DCURSES_LIBRARY=/usr/lib/x86_64-linux-gnu/libcurses.so"
-    fi
+  # #################################################################
+  # # Install Compilers
+  # #################################################################
+  # - |
+  #   ### Install gcc (homebrew)
+  #   if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+  #     brew upgrade gcc || brew install gcc
+  #   fi
+  # - |
+  #   ### Install PGI community edition
+  #   if [[ "${PGI_VERSION:-notset}" == "CommunityEdition" ]]; then
+  #     ${TRAVIS_BUILD_DIR}/install-pgi.sh --mpi
+  #     PGI_INSTALL_DIR=${HOME}/pgi
+  #     PGI_VERSION=$(basename "${PGI_INSTALL_DIR}"/linux86-64/*.*/)
+  #     PGI_DIR=${PGI_INSTALL_DIR}/linux86-64/${PGI_VERSION}
+  #     export PATH=${PGI_DIR}/bin:${PATH}
+  #     export MPI_HOME=${PGI_DIR}/mpi/openmpi
+  #     export PATH=${MPI_HOME}/bin:${PATH}
+  #     ECKIT_CMAKE_OPTIONS="-DRT_LIB=/usr/lib/x86_64-linux-gnu/librt.so -DCURSES_LIBRARY=/usr/lib/x86_64-linux-gnu/libcurses.so"
+  #   fi
 
 
-  #################################################################
-  # Install CGAL
-  #################################################################
-  - |
-    ### Install CGAL
-    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-      brew upgrade cgal || brew install cgal
-    fi
+  # #################################################################
+  # # Install CGAL
+  # #################################################################
+  # - |
+  #   ### Install CGAL
+  #   if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
+  #     brew upgrade cgal || brew install cgal
+  #   fi
 
-  #################################################################
-  # Install MPI
-  #################################################################
-  - |
-    ### Install MPI
-    if [ -z ${MPI_HOME+x} ]; then
-      export TRAVIS_WAIT="travis_wait 25"
-      ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
-      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-        export MPI_HOME=${DEPS_DIR}/${MPI}
-        export PATH=${MPI_HOME}/bin:${PATH}
-      fi
-    fi
+  # #################################################################
+  # # Install MPI
+  # #################################################################
+  # - |
+  #   ### Install MPI
+  #   if [ -z ${MPI_HOME+x} ]; then
+  #     export TRAVIS_WAIT="travis_wait 25"
+  #     ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
+  #     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+  #       export MPI_HOME=${DEPS_DIR}/${MPI}
+  #       export PATH=${MPI_HOME}/bin:${PATH}
+  #     fi
+  #   fi
 
-  #################################################################
-  # Install CMake
-  #################################################################
-  - |
-    ### Install CMake
-    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-      if [[ -z "$(ls -A ${DEPS_DIR}/cmake)" ]]; then
-        CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz"
-        mkdir -p ${DEPS_DIR}/cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
-      fi
-      export PATH=${DEPS_DIR}/cmake/bin:${PATH}
-    else
-      brew upgrade cmake || brew install cmake
-    fi
-    cmake --version
+  # #################################################################
+  # # Install CMake
+  # #################################################################
+  # - |
+  #   ### Install CMake
+  #   if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+  #     if [[ -z "$(ls -A ${DEPS_DIR}/cmake)" ]]; then
+  #       CMAKE_URL="https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz"
+  #       mkdir -p ${DEPS_DIR}/cmake && travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
+  #     fi
+  #     export PATH=${DEPS_DIR}/cmake/bin:${PATH}
+  #   else
+  #     brew upgrade cmake || brew install cmake
+  #   fi
+  #   cmake --version
 
-  #################################################################
-  # Install ecbuild
-  #################################################################
-  - |
-    ### Install ecbuild
-    git clone -b master https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
-    export PATH=${DEPS_DIR}/ecbuild/bin:${PATH}
-    ecbuild --version
+  # #################################################################
+  # # Install ecbuild
+  # #################################################################
+  # - |
+  #   ### Install ecbuild
+  #   git clone -b master https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
+  #   export PATH=${DEPS_DIR}/ecbuild/bin:${PATH}
+  #   ecbuild --version
 
   #################################################################
   # Install eckit
   #################################################################
-  - |
-    ### Install eckit
-    export ECKIT_PATH=${DEPS_DIR}/eckit
-    ECKIT_SHA=$(${TRAVIS_BUILD_DIR}/get-sha.sh ecmwf eckit master)
-    if [[ -f ${ECKIT_PATH}/sha-${ECKIT_SHA} ]]; then
-      echo "Cached eckit is up to date."
-    else
-      if ls ${ECKIT_PATH}/sha-* 1> /dev/null 2>&1; then
-         echo "Cached eckit $(ls -1 ${ECKIT_PATH}/sha-*) is out of date."
-      fi
-      echo "Installing eckit sha-${ECKIT_SHA}"
-      rm -rf ${ECKIT_PATH}
-      ECKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/eckit
-      ECKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/eckit
-      git clone -b master https://github.com/ecmwf/eckit ${ECKIT_SOURCE_DIR}
-      mkdir -p ${ECKIT_BUILD_DIR} && cd ${ECKIT_BUILD_DIR}
-      ecbuild --build=debug --prefix=${ECKIT_PATH} -- ${ECKIT_CMAKE_OPTIONS} -DENABLE_TESTS=OFF ${ECKIT_SOURCE_DIR}
-      make -j8 install
-      touch ${ECKIT_PATH}/sha-${ECKIT_SHA}
-    fi
+  - ${TRAVIS_BUILD_DIR}/play-sed.sh ecmwf eckit master
 
-  #################################################################
-  # Install fckit
-  #################################################################
-  - |
-    ### Install fckit
-    export FCKIT_PATH=${DEPS_DIR}/fckit
-    if [[ -z "$(ls -A ${FCKIT_PATH})" ]]; then
-      FCKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/fckit
-      FCKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/fckit
-      git clone -b master https://github.com/ecmwf/fckit ${FCKIT_SOURCE_DIR}
-      mkdir -p ${FCKIT_BUILD_DIR} && cd ${FCKIT_BUILD_DIR}
-      ecbuild --build=debug --prefix=${FCKIT_PATH} -- -DENABLE_TESTS=ON ${FCKIT_SOURCE_DIR}
-      make -j8 install
-    fi
+  # - |
+  #   ### Install eckit
+  #   export ECKIT_PATH=${DEPS_DIR}/eckit
+  #   ECKIT_SHA=$(${TRAVIS_BUILD_DIR}/get-sha.sh ecmwf eckit master)
+  #   if [[ -f ${ECKIT_PATH}/sha-${ECKIT_SHA} ]]; then
+  #     echo "Cached eckit is up to date."
+  #   else
+  #     if ls ${ECKIT_PATH}/sha-* 1> /dev/null 2>&1; then
+  #        echo "Cached eckit $(ls -1 ${ECKIT_PATH}/sha-*) is out of date."
+  #     fi
+  #     echo "Installing eckit sha-${ECKIT_SHA}"
+  #     rm -rf ${ECKIT_PATH}
+  #     ECKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/eckit
+  #     ECKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/eckit
+  #     git clone -b master https://github.com/ecmwf/eckit ${ECKIT_SOURCE_DIR}
+  #     mkdir -p ${ECKIT_BUILD_DIR} && cd ${ECKIT_BUILD_DIR}
+  #     ecbuild --build=debug --prefix=${ECKIT_PATH} -- ${ECKIT_CMAKE_OPTIONS} -DENABLE_TESTS=OFF ${ECKIT_SOURCE_DIR}
+  #     make -j8 install
+  #     touch ${ECKIT_PATH}/sha-${ECKIT_SHA}
+  #   fi
+  #   ${ECKIT_PATH}/bin/eckit_version
+
+  # #################################################################
+  # # Install fckit
+  # #################################################################
+  # - |
+  #   ### Install fckit
+  #   export FCKIT_PATH=${DEPS_DIR}/fckit
+  #   if [[ -z "$(ls -A ${FCKIT_PATH})" ]]; then
+  #     FCKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/fckit
+  #     FCKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/fckit
+  #     git clone -b master https://github.com/ecmwf/fckit ${FCKIT_SOURCE_DIR}
+  #     mkdir -p ${FCKIT_BUILD_DIR} && cd ${FCKIT_BUILD_DIR}
+  #     ecbuild --build=debug --prefix=${FCKIT_PATH} -- -DENABLE_TESTS=ON ${FCKIT_SOURCE_DIR}
+  #     make -j8 install
+  #   fi
 
   - cd ${TRAVIS_BUILD_DIR}
 
 script:
 
-  - |
-    ATLAS_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/atlas
-    ATLAS_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/atlas
+  - echo "hello"
 
-  #################################################################
-  # Download Atlas
-  #################################################################
-  - git clone -b master https://github.com/ecmwf/atlas ${ATLAS_SOURCE_DIR}
+  # - |
+  #   ATLAS_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/atlas
+  #   ATLAS_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/atlas
 
-  #################################################################
-  # Build Atlas
-  #################################################################
-  - mkdir -p ${ATLAS_BUILD_DIR} && cd ${ATLAS_BUILD_DIR}
-  - ecbuild --build=debug -- ${CMAKE_OPTIONS} ${ATLAS_SOURCE_DIR}
-  - make -j8
-  - bin/atlas --info
+  # #################################################################
+  # # Download Atlas
+  # #################################################################
+  # - git clone -b master https://github.com/ecmwf/atlas ${ATLAS_SOURCE_DIR}
 
-  #################################################################
-  # Test Atlas
-  #################################################################
-  - ctest
+  # #################################################################
+  # # Build Atlas
+  # #################################################################
+  # - mkdir -p ${ATLAS_BUILD_DIR} && cd ${ATLAS_BUILD_DIR}
+  # - ecbuild --build=debug -- ${CMAKE_OPTIONS} ${ATLAS_SOURCE_DIR}
+  # - make -j8
+  # - bin/atlas --info
 
-after_failure:
+  # #################################################################
+  # # Test Atlas
+  # #################################################################
+  # - ctest
 
-  - cd ${ATLAS_BUILD_DIR}
-  - ctest -VV --rerun-failed
-  - cat ecbuild.log
+# after_failure:
+
+#   - cd ${ATLAS_BUILD_DIR}
+#   - ctest -VV --rerun-failed
+#   - cat ecbuild.log

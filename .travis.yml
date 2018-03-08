@@ -77,6 +77,8 @@ matrix:
         - CXX_COMPILER='pgc++' C_COMPILER='pgcc' Fortran_COMPILER='pgfortran'
         - MPI='openmpi'
         - PGI_VERSION="CommunityEdition"
+        - ECKIT_CMAKE_OPTIONS="-DRT_LIB=/usr/lib/x86_64-linux-gnu/librt.so -DCURSES_LIBRARY=/usr/lib/x86_64-linux-gnu/libcurses.so"
+
 
     # - os: osx
     #   env:
@@ -112,6 +114,9 @@ before_install:
     export CXX=${CXX_COMPILER}
     export FC=${Fortran_COMPILER}
 
+  - |
+    export PATH=${TRAVIS_BUILD_DIR}/ci:${PATH}
+
 install:
 
   #################################################################
@@ -131,14 +136,8 @@ install:
   - |
     ### Install PGI community edition
     if [[ "${PGI_VERSION:-notset}" == "CommunityEdition" ]]; then
-      ${TRAVIS_BUILD_DIR}/install-pgi.sh --mpi
-      PGI_INSTALL_DIR=${HOME}/pgi
-      PGI_VERSION=$(basename "${PGI_INSTALL_DIR}"/linux86-64/*.*/)
-      PGI_DIR=${PGI_INSTALL_DIR}/linux86-64/${PGI_VERSION}
-      export PATH=${PGI_DIR}/bin:${PATH}
-      export MPI_HOME=${PGI_DIR}/mpi/openmpi
-      export PATH=${MPI_HOME}/bin:${PATH}
-      ECKIT_CMAKE_OPTIONS="-DRT_LIB=/usr/lib/x86_64-linux-gnu/librt.so -DCURSES_LIBRARY=/usr/lib/x86_64-linux-gnu/libcurses.so"
+      install-pgi.sh --mpi --prefix ${DEPS_DIR}/pgi
+      source ${DEPS_DIR}/pgi/env.sh
     fi
 
 
@@ -156,14 +155,8 @@ install:
   #################################################################
   - |
     ### Install MPI
-    if [ -z ${MPI_HOME+x} ]; then
-      export TRAVIS_WAIT="travis_wait 25"
-      ${TRAVIS_BUILD_DIR}/install-mpi.sh ${MPI}
-      if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
-        export MPI_HOME=${DEPS_DIR}/${MPI}
-        export PATH=${MPI_HOME}/bin:${PATH}
-      fi
-    fi
+    install-mpi.sh ${MPI}
+    source ${DEPS_DIR}/${MPI}/env.sh
 
   #################################################################
   # Install CMake
@@ -196,7 +189,7 @@ install:
   - |
     ### Install eckit
     export ECKIT_PATH=${DEPS_DIR}/eckit
-    ECKIT_SHA=$(${TRAVIS_BUILD_DIR}/get-sha.sh ecmwf eckit master)
+    ECKIT_SHA=$(get-sha.sh ecmwf eckit master)
     if [[ -f ${ECKIT_PATH}/sha-${ECKIT_SHA} ]]; then
       echo "Cached eckit is up to date."
     else
@@ -210,7 +203,7 @@ install:
       git clone --depth 1 -b master https://github.com/ecmwf/eckit ${ECKIT_SOURCE_DIR}
       mkdir -p ${ECKIT_BUILD_DIR} && cd ${ECKIT_BUILD_DIR}
       ecbuild --build=debug --prefix=${ECKIT_PATH} -- ${ECKIT_CMAKE_OPTIONS} -DENABLE_TESTS=OFF ${ECKIT_SOURCE_DIR}
-      make -j8 install
+      make -j4 install
       touch ${ECKIT_PATH}/sha-${ECKIT_SHA}
     fi
     ${ECKIT_PATH}/bin/eckit_version
@@ -221,7 +214,7 @@ install:
   - |
     ### Install fckit
     export FCKIT_PATH=${DEPS_DIR}/fckit
-    fCKIT_SHA=$(${TRAVIS_BUILD_DIR}/get-sha.sh ecmwf fckit master)
+    fCKIT_SHA=$(get-sha.sh ecmwf fckit master)
     if [[ -f ${FCKIT_PATH}/sha-${FCKIT_SHA} ]]; then
       echo "Cached fckit is up to date."
     else
@@ -235,7 +228,7 @@ install:
       git clone -b master https://github.com/ecmwf/fckit ${FCKIT_SOURCE_DIR}
       mkdir -p ${FCKIT_BUILD_DIR} && cd ${FCKIT_BUILD_DIR}
       ecbuild --build=debug --prefix=${FCKIT_PATH} -- -DENABLE_TESTS=ON ${FCKIT_SOURCE_DIR}
-      make -j8 install
+      make -j4 install
     fi
 
   - cd ${TRAVIS_BUILD_DIR}
@@ -256,7 +249,7 @@ script:
   #################################################################
   - mkdir -p ${ATLAS_BUILD_DIR} && cd ${ATLAS_BUILD_DIR}
   - ecbuild --build=debug -- ${CMAKE_OPTIONS} ${ATLAS_SOURCE_DIR}
-  - make -j8
+  - make -j4
   - bin/atlas --info
 
   #################################################################

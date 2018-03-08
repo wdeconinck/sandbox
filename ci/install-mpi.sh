@@ -4,15 +4,24 @@ set -e
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-MPI_IMPL="$1"
-os=`uname`
+if
+
+
+MPI="$1"
+os=$(uname)
 OMPIVER=openmpi-3.0.0
 MPICHVER=3.2.1
 
+PREFIX=$(pwd)/${MPI}
+mkdir -p ${PREFIX}
+touch ${PREFIX}/env.sh
+
+MPI_INSTALLED=false
+
 case "$os" in
     Darwin)
-        case "$MPI_IMPL" in
-            mpich|mpich3)
+        case "$MPI" in
+            mpich)
                 brew upgrade mpich || brew install mpich
                 ;;
             openmpi)
@@ -20,14 +29,18 @@ case "$os" in
                 echo "localhost slots=12" >> /usr/local/etc/openmpi-default-hostfile
                 ;;
             *)
-                echo "Unknown MPI implementation: $MPI_IMPL"
+                echo "Unknown MPI implementation: $MPI"
                 exit 1
                 ;;
         esac
     ;;
 
     Linux)
-        case "$MPI_IMPL" in
+        if [ -z "${MPI_HOME}" ]; then
+          echo "MPI is already installed at ${MPI_HOME}. Not taking any action"
+          exit 0
+        fi
+        case "$MPI" in
             mpich)
                 if [ -f mpich/include/mpi.h ]; then
                   echo "mpich/include/mpi.h found."
@@ -40,9 +53,8 @@ case "$os" in
                   tar xfz mpich-${MPICHVER}.tar.gz
                   rm mpich-${MPICHVER}.tar.gz
                   echo "Configuring and building mpich..."
-                  PREFIX=$(pwd)/mpich
                   cd mpich-${MPICHVER}
-                  ${SCRIPTDIR}/no-output.sh ./configure \
+                  ${SCRIPTDIR}/reduce-output.sh ./configure \
                           --prefix=${PREFIX} \
                           --enable-static=false \
                           --enable-alloca=true \
@@ -51,8 +63,9 @@ case "$os" in
                           --enable-fast=all \
                           --enable-g=none \
                           --enable-timing=none
-                  ${SCRIPTDIR}/no-output.sh make -j8
+                  ${SCRIPTDIR}/no-output.sh make -j4
                   ${SCRIPTDIR}/no-output.sh make install
+                  MPI_INSTALLED=true
                   cd -
                 fi
                 ;;
@@ -68,17 +81,17 @@ case "$os" in
                   tar -zxf $OMPIVER.tar.gz
                   rm $OMPIVER.tar.gz
                   echo "Configuring and building openmpi..."
-                  PREFIX=$(pwd)/openmpi
                   cd $OMPIVER
-                  ${SCRIPTDIR}/no-output.sh ./configure \
+                  ${SCRIPTDIR}/reduce-output.sh ./configure \
                           --prefix=${PREFIX}
-                  ${SCRIPTDIR}/no-output.sh make -j8
+                  ${SCRIPTDIR}/no-output.sh make -j4
                   ${SCRIPTDIR}/no-output.sh make install
+                  MPI_INSTALLED=true
                   cd -
                 fi
                 ;;
             *)
-                echo "Unknown MPI implementation: $MPI_IMPL"
+                echo "Unknown MPI implementation: $MPI"
                 exit 1
                 ;;
         esac
@@ -89,3 +102,11 @@ case "$os" in
         exit 1
         ;;
 esac
+
+
+if ${MPI_INSTALLED}; then
+cat > ${PREFIX}/env.sh << "EOF"
+export MPI_HOME=${PREFIX}
+export PATH=\${MPI_HOME}/bin:\${PATH}
+EOF
+fi

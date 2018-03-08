@@ -29,7 +29,7 @@ VERBOSE=false
 
 while [ $# != 0 ]; do
     case "$1" in
-    "--dest")
+    "--prefix")
         export PGI_INSTALL_DIR="$2"; shift
         ;;
     "--tmpdir")
@@ -88,16 +88,37 @@ cd "${TEMPORARY_FILES}"/install_components && ./install
 
 PGI_VERSION=$(basename "${PGI_INSTALL_DIR}"/linux86-64/*.*/)
 
-INSTALL_BINDIR="${HOME}/bin"
-if [ ! -e "${INSTALL_BINDIR}" ]; then
-    mkdir -p "${INSTALL_BINDIR}"
+
+cat > ${PGI_INSTALL_DIR}/load.sh << EOF
+### Variables
+PGI_INSTALL_DIR=${PGI_INSTALL_DIR}
+PGI_VERSION=${PGI_VERSION}
+
+### Compilers
+PGI_DIR=\${PGI_INSTALL_DIR}/linux86-64/\${PGI_VERSION}
+export PATH=\${PGI_DIR}/bin:\${PATH}
+EOF
+
+if ${PGI_INSTALL_MPI} ; then
+cat >> ${PGI_INSTALL_DIR}/load.sh << EOF
+
+### MPI
+export MPI_HOME=\${PGI_DIR}/mpi/openmpi
+export PATH=\${MPI_HOME}/bin:\${PATH}
+EOF
 fi
 
-for file in "${PGI_INSTALL_DIR}"/linux86-64/"${PGI_VERSION}"/bin/*; do
-    dest="${INSTALL_BINDIR}/$(basename "${file}")"
-    if [ -x "${file}" ]; then
-    echo "#!/bin/sh" > "${dest}"
-    echo "PGI=${PGI_INSTALL_DIR} PGI_INSTALL=\"\${PGI}\"/linux86-64/${PGI_VERSION} ${file} \$@" >> "${dest}"
-    chmod 0755 "${dest}"
-    fi
-done
+
+# INSTALL_BINDIR="${HOME}/bin"
+# if [ ! -e "${INSTALL_BINDIR}" ]; then
+#     mkdir -p "${INSTALL_BINDIR}"
+# fi
+
+# for file in "${PGI_INSTALL_DIR}"/linux86-64/"${PGI_VERSION}"/bin/*; do
+#     dest="${INSTALL_BINDIR}/$(basename "${file}")"
+#     if [ -x "${file}" ]; then
+#     echo "#!/bin/sh" > "${dest}"
+#     echo "PGI=${PGI_INSTALL_DIR} PGI_INSTALL=\"\${PGI}\"/linux86-64/${PGI_VERSION} ${file} \$@" >> "${dest}"
+#     chmod 0755 "${dest}"
+#     fi
+# done

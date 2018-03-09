@@ -61,8 +61,8 @@ case "$os" in
                           --enable-fast=all \
                           --enable-g=none \
                           --enable-timing=none
-                  ${SCRIPTDIR}/no-output.sh make -j4
-                  ${SCRIPTDIR}/no-output.sh make install
+                  ${SCRIPTDIR}/reduce-output.sh make -j4
+                  ${SCRIPTDIR}/reduce-output.sh make install
                   MPI_INSTALLED=true
                   cd -
                 fi
@@ -82,8 +82,8 @@ case "$os" in
                   cd $OMPIVER
                   ${SCRIPTDIR}/reduce-output.sh ./configure \
                           --prefix=${PREFIX}
-                  ${SCRIPTDIR}/no-output.sh make -j4
-                  ${SCRIPTDIR}/no-output.sh make install
+                  ${SCRIPTDIR}/reduce-output.sh make -j4
+                  ${SCRIPTDIR}/reduce-output.sh make install
                   MPI_INSTALLED=true
                   cd -
                 fi

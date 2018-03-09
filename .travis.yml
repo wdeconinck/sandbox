@@ -30,6 +30,7 @@ matrix:
         - CACHE_NAME=linux-clang38-mpich
         - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
         - MPI='mpich'
+        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
       addons:
         apt:
           sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
@@ -41,6 +42,7 @@ matrix:
         - CACHE_NAME=linux-clang38-openmpi
         - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
         - MPI='openmpi'
+        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
       addons:
          apt:
            sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
@@ -52,6 +54,7 @@ matrix:
         - CACHE_NAME=linux-gcc5-mpich
         - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
         - MPI='mpich'
+        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
       addons:
         apt:
           sources:  ['ubuntu-toolchain-r-test']
@@ -63,6 +66,7 @@ matrix:
         - CACHE_NAME=linux-gcc5-openmpi
         - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
         - MPI='openmpi'
+        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
       addons:
         apt:
           sources:  ['ubuntu-toolchain-r-test']
@@ -73,6 +77,7 @@ matrix:
         - CACHE_NAME=osx-clang-openmpi
         - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
         - MPI=openmpi
+        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
       osx_image: xcode9
 
     ##################################
@@ -96,6 +101,7 @@ matrix:
     #     - ECKIT_CMAKE_OPTIONS="-DRT_LIB=/usr/lib/x86_64-linux-gnu/librt.so -DCURSES_LIBRARY=/usr/lib/x86_64-linux-gnu/libcurses.so"
 
 before_install:
+
   #################################################################
   # Fixes to pre-installed packages
   #################################################################
@@ -116,7 +122,8 @@ before_install:
     export FC=${Fortran_COMPILER}
 
   - |
-    export PATH=${TRAVIS_BUILD_DIR}/ci:${PATH}
+    ### Load scripts
+    source ${TRAVIS_BUILD_DIR}/ci/source_me
 
 install:
 
@@ -184,6 +191,7 @@ install:
     ### Install ecbuild
     git clone --depth 1 -b master https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
     export PATH=${DEPS_DIR}/ecbuild/bin:${PATH}
+    export ECBUILD_MODULE_PATH=${DEPS_DIR}/ecbuild/cmake
     ecbuild --version
 
   #################################################################
@@ -191,56 +199,25 @@ install:
   #################################################################
   - |
     ### Install eckit
-    export ECKIT_PATH=${DEPS_DIR}/eckit
-    ECKIT_SHA=$(github-sha.sh ecmwf eckit master)
-    if [[ -f ${ECKIT_PATH}/sha-${ECKIT_SHA} ]]; then
-      echo "Cached eckit is up to date, sha-${ECKIT_SHA} ."
-    else
-      if ls ${ECKIT_PATH}/sha-* 1> /dev/null 2>&1; then
-         echo "Cached eckit $(ls -1 ${ECKIT_PATH}/sha-*) is out of date."
-      fi
-      echo "Installing eckit sha-${ECKIT_SHA}"
-      rm -rf ${ECKIT_PATH}
-      ECKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/eckit
-      ECKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/eckit
-      git clone --depth 1 -b master https://github.com/ecmwf/eckit ${ECKIT_SOURCE_DIR}
-      mkdir -p ${ECKIT_BUILD_DIR} && cd ${ECKIT_BUILD_DIR}
-      ecbuild --build=debug --prefix=${ECKIT_PATH} -- ${ECKIT_CMAKE_OPTIONS} -DENABLE_TESTS=OFF -DENABLE_MPI=ON ${ECKIT_SOURCE_DIR}
-      make -j4 install
-      touch ${ECKIT_PATH}/sha-${ECKIT_SHA}
-    fi
-    echo "eckit version - $(${ECKIT_PATH}/bin/eckit_version)"
+    install-pkg --repo eckit --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG"
 
   #################################################################
   # Install fckit
   #################################################################
   - |
     ### Install fckit
-    export FCKIT_PATH=${DEPS_DIR}/fckit
-    FCKIT_SHA=$(github-sha.sh ecmwf fckit master)
-    if [[ -f ${FCKIT_PATH}/sha-${FCKIT_SHA} ]]; then
-      echo "Cached fckit is up to date, sha-${FCKIT_SHA} ."
-    else
-      if ls ${FCKIT_PATH}/sha-* 1> /dev/null 2>&1; then
-         echo "Cached fckit $(ls -1 ${FCKIT_PATH}/sha-*) is out of date."
-      fi
-      echo "Installing fckit sha-${FCKIT_SHA}"
-      rm -rf ${FCKIT_PATH}
-      FCKIT_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/fckit
-      FCKIT_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/fckit
-      git clone -b master https://github.com/ecmwf/fckit ${FCKIT_SOURCE_DIR}
-      mkdir -p ${FCKIT_BUILD_DIR} && cd ${FCKIT_BUILD_DIR}
-      ecbuild --build=debug --prefix=${FCKIT_PATH} -- -DENABLE_TESTS=ON ${FCKIT_SOURCE_DIR}
-      make -j4 install
-      touch ${FCKIT_PATH}/sha-${FCKIT_SHA}
-    fi
-
-  - cd ${TRAVIS_BUILD_DIR}
+    install-pkg --repo eckit --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG" --depends "eckit"
 
 script:
-  - echo "${MPI_HOME}"
-  - echo "${PATH}"
 
+  #################################################################
+  # Environment variables
+  #################################################################
+  - echo ${CXX}
+  - echo ${CC}
+  - echo ${FC}
+  - echo ${MPI_HOME}
+  - echo ${PATH}
   - |
     ATLAS_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/atlas
     ATLAS_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/atlas
@@ -254,7 +231,7 @@ script:
   # Build Atlas
   #################################################################
   - mkdir -p ${ATLAS_BUILD_DIR} && cd ${ATLAS_BUILD_DIR}
-  - ecbuild --build=debug -- ${CMAKE_OPTIONS} ${ATLAS_SOURCE_DIR}
+  - cmake -DCMAKE_MODULE_PATH=${ECBUILD_MODULE_PATH} ${ATLAS_CMAKE_OPTIONS} ${ATLAS_SOURCE_DIR}
   - make -j4
   - bin/atlas --info
 

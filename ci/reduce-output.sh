@@ -3,7 +3,6 @@
 set -e
 
 PING_SLEEP=30s
-SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 dump_output() {
    echo " ++ Tailing the last 500 lines of output from $BUILD_OUTPUT"

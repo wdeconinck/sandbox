@@ -64,7 +64,7 @@ case "$os" in
                   # ${SCRIPTDIR}/reduce-output.sh make -j4
                   # ${SCRIPTDIR}/reduce-output.sh make install
                   MPI_INSTALLED=true
-                  cd -
+                  # cd -
                 fi
                 ;;
             openmpi)

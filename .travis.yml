@@ -169,6 +169,11 @@ install:
     ### Install MPI
     install-mpi.sh ${MPI}
     source ${DEPS_DIR}/${MPI}/env.sh
+  - ls -l /home/travis/build/wdeconinck/sandbox/deps/mpich/env.sh
+  - ls -l ${DEPS_DIR}/${MPI}/env.sh
+  - cat /home/travis/build/wdeconinck/sandbox/deps/mpich/env.sh
+  - cat ${DEPS_DIR}/${MPI}/env.sh
+  - . ${DEPS_DIR}/${MPI}/env.sh
     
   - echo "${MPI_HOME}"
   - echo "${PATH}"

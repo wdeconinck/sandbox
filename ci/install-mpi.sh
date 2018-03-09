@@ -47,24 +47,24 @@ case "$os" in
                   echo "libmpich.so found -- nothing to build."
                 else
                   echo "Downloading mpich source..."
-                  # wget http://www.mpich.org/static/downloads/${MPICHVER}/mpich-${MPICHVER}.tar.gz
-                  # tar xfz mpich-${MPICHVER}.tar.gz
-                  # rm mpich-${MPICHVER}.tar.gz
-                  # echo "Configuring and building mpich..."
-                  # cd mpich-${MPICHVER}
-                  # ${SCRIPTDIR}/reduce-output.sh ./configure \
-                  #         --prefix=${PREFIX} \
-                  #         --enable-static=false \
-                  #         --enable-alloca=true \
-                  #         --enable-threads=single \
-                  #         --enable-fortran=yes \
-                  #         --enable-fast=all \
-                  #         --enable-g=none \
-                  #         --enable-timing=none
-                  # ${SCRIPTDIR}/reduce-output.sh make -j4
-                  # ${SCRIPTDIR}/reduce-output.sh make install
+                  wget http://www.mpich.org/static/downloads/${MPICHVER}/mpich-${MPICHVER}.tar.gz
+                  tar xfz mpich-${MPICHVER}.tar.gz
+                  rm mpich-${MPICHVER}.tar.gz
+                  echo "Configuring and building mpich..."
+                  cd mpich-${MPICHVER}
+                  ${SCRIPTDIR}/reduce-output.sh ./configure \
+                          --prefix=${PREFIX} \
+                          --enable-static=false \
+                          --enable-alloca=true \
+                          --enable-threads=single \
+                          --enable-fortran=yes \
+                          --enable-fast=all \
+                          --enable-g=none \
+                          --enable-timing=none
+                  ${SCRIPTDIR}/reduce-output.sh make -j4
+                  ${SCRIPTDIR}/reduce-output.sh make install
                   MPI_INSTALLED=true
-                  # cd -
+                  cd -
                 fi
                 ;;
             openmpi)

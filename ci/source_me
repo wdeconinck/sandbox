@@ -1,9 +1,10 @@
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export PATH=$SCRIPTDIR:$PATH
 
-function install-pkg() {
-    set -e
+function install-github() {
 
+    set -x
+    
     owner=ecmwf
     repo="unknown"
     branch=master
@@ -113,4 +114,5 @@ function install-pkg() {
     # Export
     REPO=$(echo $repo | awk '{print toupper($0)}')
     eval "export ${REPO}_PATH=${PREFIX}"
+    set +x
 }

@@ -83,11 +83,12 @@ function install-github() {
 
     if ! ${skip_install} ; then
       echo "Installing ${repo} sha-${SHA}"
+      if [ -z "${TMPDIR}" ]; then
+        TMPDIR=${HOME}/tmp
+      fi
       SOURCE_DIR=${TMPDIR}/downloads/${repo}
       BUILD_DIR=${TMPDIR}/builds/${repo}
-      rm -rf ${PREFIX}
-      rm -rf ${SOURCE_DIR}
-      rm -rf ${BUILD_DIR}
+      rm -rf ${PREFIX} ${SOURCE_DIR} ${BUILD_DIR}
 
       # Download
       git clone -b ${branch} https://github.com/${owner}/${repo} ${SOURCE_DIR}

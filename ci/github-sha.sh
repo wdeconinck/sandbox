@@ -4,6 +4,8 @@ owner=$1
 repo=$2
 branch=$3
 
+pushd .
+
 if [ -z "${TMPDIR}" ]; then
   TMPDIR=${HOME}/tmp
 fi
@@ -30,3 +32,5 @@ cd ${SOURCE_DIR} >> ${BUILD_OUTPUT} 2>&1
 git rev-parse HEAD
 cd ..
 rm -rf ${SOURCE_DIR}
+
+popd

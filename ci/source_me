@@ -2,6 +2,7 @@ SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export PATH=$SCRIPTDIR:$PATH
 
 function install-github() {
+
     owner=ecmwf
     repo="unknown"
     branch=master
@@ -80,6 +81,8 @@ function install-github() {
 
     if ! ${skip_install} ; then
       echo "Installing ${repo} sha-${SHA}"
+      pushd .
+
       if [ -z "${TMPDIR}" ]; then
         TMPDIR=${HOME}/tmp
       fi
@@ -99,13 +102,14 @@ function install-github() {
       mkdir -p ${PREFIX}/sha
       touch ${PREFIX}/sha-${SHA}
       echo ${SHA} > ${PREFIX}/sha/${repo}
-      rm -rf ${SOURCE_DIR} ${BUILD_DIR}
       for dep in "${depends[@]}"; do
         DEP=$(echo ${dep} | awk '{print toupper($0)}')
         DEP_PATH=$(eval "echo \$${DEP}_PATH")
         curr_sha=$(cat ${DEP_PATH}/sha/${dep})
         echo ${curr_sha} > ${PREFIX}/sha/${dep}
       done
+      popd
+      rm -rf ${SOURCE_DIR} ${BUILD_DIR}
 
     fi
 

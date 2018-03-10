@@ -199,7 +199,6 @@ install:
   #################################################################
   - |
     ### Install eckit
-    source ${TRAVIS_BUILD_DIR}/source_me
     install-github --repo eckit --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG"
 
   #################################################################
@@ -207,7 +206,6 @@ install:
   #################################################################
   - |
     ### Install fckit
-    source ${TRAVIS_BUILD_DIR}/source_me
     install-github --repo eckit --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG" --depends "eckit"
 
 script:

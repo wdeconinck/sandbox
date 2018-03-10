@@ -206,7 +206,7 @@ install:
   #################################################################
   - |
     ### Install fckit
-    install-github --repo eckit --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG" --depends "eckit"
+    install-github --repo fckit --prefix ${DEPS_DIR}/fckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG" --depends "eckit"
 
 script:
 
@@ -221,6 +221,7 @@ script:
   - |
     ATLAS_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/atlas
     ATLAS_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/atlas
+  - cd ${TRAVIS_BUILD_DIR}
 
   #################################################################
   # Download Atlas

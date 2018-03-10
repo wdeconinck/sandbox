@@ -22,7 +22,7 @@ error_handler() {
 # If an error occurs, run our error handler to output a tail of the build
 trap 'error_handler' ERR
 
-BUILD_OUTPUT=$(pwd)/tmp-${repo}.log
+BUILD_OUTPUT=${TMPDIR}/tmp-${repo}.log
 touch $BUILD_OUTPUT
 
 git clone --depth=1 -b ${branch} https://github.com/${owner}/${repo} ${SOURCE_DIR} >> ${BUILD_OUTPUT} 2>&1 

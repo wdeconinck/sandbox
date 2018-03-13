@@ -36,7 +36,6 @@ function install-github() {
         shift
     done
 
-    #echo "install-pkg $repo"
     all_deps_uptodate=true
     for dep in "${depends[@]}"; do
       DEP=$(echo ${dep} | awk '{print toupper($0)}')
@@ -45,8 +44,6 @@ function install-github() {
 
       if [[ -f ${PREFIX}/sha/${dep} ]]; then
         prev_sha=$(cat ${PREFIX}/sha/${dep})
-        #echo "previous ${dep} sha ${prev_sha}"
-        #echo "current  ${dep} sha ${curr_sha}"
         if [ "${prev_sha}" == "${curr_sha}" ]; then
           uptodate=true
         else
@@ -59,12 +56,10 @@ function install-github() {
       touch ${PREFIX}/sha/${dep}
       echo ${curr_sha} > ${PREFIX}/sha/${dep}
 
-      #echo "uptodate=${uptodate}"
       if ! ${uptodate}; then
         all_deps_uptodate=false
       fi
     done
-    # echo "all_deps_uptodate=${all_deps_uptodate}"
     skip_install=${all_deps_uptodate}
 
     SHA=$(github-sha.sh ${owner} ${repo} ${branch})
@@ -77,12 +72,9 @@ function install-github() {
       fi
     fi
 
-    #echo "skip_install=${skip_install}"
-
     if ! ${skip_install} ; then
       echo "Installing ${repo} sha-${SHA}"
-      pushd .
-
+      pushd . > /dev/null 2>&1
       if [ -z "${TMPDIR}" ]; then
         TMPDIR=${HOME}/tmp
       fi

@@ -9,7 +9,7 @@ pushd .
 if [ -z "${TMPDIR}" ]; then
   TMPDIR=${HOME}/tmp
 fi
-SOURCE_DIR=${TMPDIR}/downloads/check-git-${repo}
+SOURCE_DIR=${TMPDIR}/check-git-${repo}
 
 dump_output() {
    echo " ++ Tailing the last 500 lines of output from ${BUILD_OUTPUT}"
@@ -25,8 +25,9 @@ error_handler() {
 trap 'error_handler' ERR
 
 BUILD_OUTPUT=${TMPDIR}/tmp-${repo}.log
-touch $BUILD_OUTPUT
 
+mkdir -p ${TMPDIR}
+touch $BUILD_OUTPUT
 git clone --depth=1 -b ${branch} https://github.com/${owner}/${repo} ${SOURCE_DIR} >> ${BUILD_OUTPUT} 2>&1 
 cd ${SOURCE_DIR} >> ${BUILD_OUTPUT} 2>&1 
 git rev-parse HEAD

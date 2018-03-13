@@ -63,7 +63,7 @@ function install-github() {
     skip_install=${all_deps_uptodate}
 
     SHA=$(github-sha.sh ${owner} ${repo} ${branch})
-    if [ -f ${PREFIX}/sha-${SHA} ]; then
+    if [[ -f "${PREFIX}/sha-${SHA}" ]]; then
       echo "Cached ${repo} (sha-${SHA}) is up to date."
     else
       skip_install=false

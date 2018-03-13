@@ -4,8 +4,6 @@ owner=$1
 repo=$2
 branch=$3
 
-pushd .
-
 if [ -z "${TMPDIR}" ]; then
   TMPDIR=${HOME}/tmp
 fi
@@ -28,6 +26,7 @@ BUILD_OUTPUT=${TMPDIR}/tmp-${repo}.log
 
 mkdir -p ${TMPDIR}
 touch $BUILD_OUTPUT
+pushd . >> ${BUILD_OUTPUT} 2>&1
 git clone --depth=1 -b ${branch} https://github.com/${owner}/${repo} ${SOURCE_DIR} >> ${BUILD_OUTPUT} 2>&1 
 cd ${SOURCE_DIR} >> ${BUILD_OUTPUT} 2>&1 
 git rev-parse HEAD

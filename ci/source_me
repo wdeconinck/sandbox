@@ -82,7 +82,7 @@ function install-github() {
 
     if ! ${skip_install} ; then
       echo "Installing ${repo} sha-${SHA}"
-      { pushd . ; } 2> /dev/null
+      pushd . >> /dev/null 2>&1
       if [ -z "${TMPDIR}" ]; then
         TMPDIR=${HOME}/tmp
       fi
@@ -111,7 +111,7 @@ function install-github() {
         curr_sha=$(cat ${DEP_PATH}/sha/${dep})
         echo ${curr_sha} > ${PREFIX}/sha/${dep}
       done
-      popd
+      popd >> /dev/null 2>&1
       rm -rf ${SOURCE_DIR} ${BUILD_DIR}
 
     fi

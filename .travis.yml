@@ -206,7 +206,7 @@ install:
   #################################################################
   - |
     ### Install fckit
-    install-github --repo fckit --prefix ${DEPS_DIR}/fckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG" --depends "eckit"
+    install-github --repo fckit --prefix ${DEPS_DIR}/fckit --cmake "-DENABLE_TESTS=ON -DCMAKE_BUILD_TYPE=DEBUG" --depends "eckit"
 
 script:
 

@@ -199,7 +199,7 @@ install:
   #################################################################
   - |
     ### Install eckit
-    install-github --repo eckit --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG ${ECKIT_CMAKE_OPTIONS}" --no-cache
+    install-github --repo eckit --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG ${ECKIT_CMAKE_OPTIONS}"
 
   #################################################################
   # Install fckit

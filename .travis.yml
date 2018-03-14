@@ -72,6 +72,18 @@ matrix:
           sources:  ['ubuntu-toolchain-r-test']
           packages: ['g++-5', 'gcc-5', 'gfortran-5']
 
+    - os: linux
+      compiler: gcc
+      env:
+        - CACHE_NAME=linux-gcc7-mpich
+        - CXX_COMPILER='g++-7' C_COMPILER='gcc-7' Fortran_COMPILER='gfortran-7'
+        - MPI='mpich'
+        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+      addons:
+        apt:
+          sources:  ['ubuntu-toolchain-r-test']
+          packages: ['g++-7', 'gcc-7', 'gfortran-7']
+
     - os: osx
       env:
         - CACHE_NAME=osx-clang-openmpi

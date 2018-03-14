@@ -63,6 +63,8 @@ function install-github() {
     skip_install=${all_deps_uptodate}
 
     SHA=$(github-sha.sh ${owner} ${repo} ${branch})
+    echo "${repo} sha : [${SHA}]"
+    ls -1 ${PREFIX}
     if [[ -f "${PREFIX}/sha-${SHA}" ]]; then
       echo "Cached ${repo} (sha-${SHA}) is up to date."
     else
@@ -74,7 +76,7 @@ function install-github() {
 
     if ! ${skip_install} ; then
       echo "Installing ${repo} sha-${SHA}"
-      pushd . >> /dev/null 2>&1
+      { pushd . ; } 2> /dev/null
       if [ -z "${TMPDIR}" ]; then
         TMPDIR=${HOME}/tmp
       fi

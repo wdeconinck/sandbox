@@ -24,61 +24,61 @@ matrix:
 
   include:
 
-    # - os: linux
-    #   compiler: clang
-    #   env:
-    #     - CACHE_NAME=linux-clang38-mpich
-    #     - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
-    #     - MPI='mpich'
-    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-    #   addons:
-    #     apt:
-    #       sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
-    #       packages: ['clang-3.8', 'gfortran']
+    - os: linux
+      compiler: clang
+      env:
+        - CACHE_NAME=linux-clang38-mpich
+        - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+        - MPI='mpich'
+        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+      addons:
+        apt:
+          sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
+          packages: ['clang-3.8', 'gfortran']
 
-    # - os: linux
-    #   compiler: clang
-    #   env:
-    #     - CACHE_NAME=linux-clang38-openmpi
-    #     - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
-    #     - MPI='openmpi'
-    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-    #   addons:
-    #      apt:
-    #        sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
-    #        packages: ['clang-3.8', 'gfortran']
+    - os: linux
+      compiler: clang
+      env:
+        - CACHE_NAME=linux-clang38-openmpi
+        - CXX_COMPILER='clang++-3.8' C_COMPILER='clang-3.8' Fortran_COMPILER='gfortran'
+        - MPI='openmpi'
+        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+      addons:
+         apt:
+           sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
+           packages: ['clang-3.8', 'gfortran']
 
-    # - os: linux
-    #   compiler: gcc
-    #   env:
-    #     - CACHE_NAME=linux-gcc5-mpich
-    #     - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
-    #     - MPI='mpich'
-    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-    #   addons:
-    #     apt:
-    #       sources:  ['ubuntu-toolchain-r-test']
-    #       packages: ['g++-5', 'gcc-5', 'gfortran-5']
+    - os: linux
+      compiler: gcc
+      env:
+        - CACHE_NAME=linux-gcc5-mpich
+        - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
+        - MPI='mpich'
+        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+      addons:
+        apt:
+          sources:  ['ubuntu-toolchain-r-test']
+          packages: ['g++-5', 'gcc-5', 'gfortran-5']
 
-    # - os: linux
-    #   compiler: gcc
-    #   env:
-    #     - CACHE_NAME=linux-gcc5-openmpi
-    #     - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
-    #     - MPI='openmpi'
-    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-    #   addons:
-    #     apt:
-    #       sources:  ['ubuntu-toolchain-r-test']
-    #       packages: ['g++-5', 'gcc-5', 'gfortran-5']
+    - os: linux
+      compiler: gcc
+      env:
+        - CACHE_NAME=linux-gcc5-openmpi
+        - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
+        - MPI='openmpi'
+        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+      addons:
+        apt:
+          sources:  ['ubuntu-toolchain-r-test']
+          packages: ['g++-5', 'gcc-5', 'gfortran-5']
 
-    # - os: osx
-    #   env:
-    #     - CACHE_NAME=osx-clang-openmpi
-    #     - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
-    #     - MPI=openmpi
-    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-    #   osx_image: xcode9
+    - os: osx
+      env:
+        - CACHE_NAME=osx-clang-openmpi
+        - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
+        - MPI=openmpi
+        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+      osx_image: xcode9
 
     ##################################
     # KNOWN TO FAIL, so comment
@@ -91,14 +91,14 @@ matrix:
     #     - MPI=mpich
     #   osx_image: xcode9
 
-    - os: linux
-      compiler: gcc
-      env:
-        - CACHE_NAME=linux-pgi-openmpi
-        - CXX_COMPILER='pgc++' C_COMPILER='pgcc' Fortran_COMPILER='pgfortran'
-        - MPI='openmpi'
-        - PGI_VERSION="CommunityEdition"
-        - ECKIT_CMAKE_OPTIONS="-DRT_LIB=/usr/lib/x86_64-linux-gnu/librt.so -DCURSES_LIBRARY=/usr/lib/x86_64-linux-gnu/libcurses.so"
+    # - os: linux
+    #   compiler: gcc
+    #   env:
+    #     - CACHE_NAME=linux-pgi-openmpi
+    #     - CXX_COMPILER='pgc++' C_COMPILER='pgcc' Fortran_COMPILER='pgfortran'
+    #     - MPI='openmpi'
+    #     - PGI_VERSION="CommunityEdition"
+    #     - ECKIT_CMAKE_OPTIONS="-DRT_LIB=/usr/lib/x86_64-linux-gnu/librt.so -DCURSES_LIBRARY=/usr/lib/x86_64-linux-gnu/libcurses.so"
 
 before_install:
 
@@ -200,6 +200,7 @@ install:
   - |
     ### Install eckit
     install-github --repo eckit --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG ${ECKIT_CMAKE_OPTIONS}"
+    ${DEPS_DIR}/eckit/bin/eckit_version
 
   #################################################################
   # Install fckit
@@ -210,38 +211,36 @@ install:
 
 script:
 
-  - echo ${ECKIT_PATH}
-  - echo ${FCKIT_PATH}
-  # #################################################################
-  # # Environment variables
-  # #################################################################
-  # - echo ${CXX}
-  # - echo ${CC}
-  # - echo ${FC}
-  # - echo ${MPI_HOME}
-  # - echo ${PATH}
-  # - |
-  #   ATLAS_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/atlas
-  #   ATLAS_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/atlas
-  # - cd ${TRAVIS_BUILD_DIR}
+  #################################################################
+  # Environment variables
+  #################################################################
+  - echo ${CXX}
+  - echo ${CC}
+  - echo ${FC}
+  - echo ${MPI_HOME}
+  - echo ${PATH}
+  - |
+    ATLAS_SOURCE_DIR=${TRAVIS_BUILD_DIR}/downloads/atlas
+    ATLAS_BUILD_DIR=${TRAVIS_BUILD_DIR}/builds/atlas
+  - cd ${TRAVIS_BUILD_DIR}
 
-  # #################################################################
-  # # Download Atlas
-  # #################################################################
-  # - git clone --depth 1 -b master https://github.com/ecmwf/atlas ${ATLAS_SOURCE_DIR}
+  #################################################################
+  # Download Atlas
+  #################################################################
+  - git clone --depth 1 -b master https://github.com/ecmwf/atlas ${ATLAS_SOURCE_DIR}
 
-  # #################################################################
-  # # Build Atlas
-  # #################################################################
-  # - mkdir -p ${ATLAS_BUILD_DIR} && cd ${ATLAS_BUILD_DIR}
-  # - cmake -DCMAKE_MODULE_PATH=${ECBUILD_MODULE_PATH} ${ATLAS_CMAKE_OPTIONS} ${ATLAS_SOURCE_DIR}
-  # - make -j4
-  # - bin/atlas --info
+  #################################################################
+  # Build Atlas
+  #################################################################
+  - mkdir -p ${ATLAS_BUILD_DIR} && cd ${ATLAS_BUILD_DIR}
+  - cmake -DCMAKE_MODULE_PATH=${ECBUILD_MODULE_PATH} ${ATLAS_CMAKE_OPTIONS} ${ATLAS_SOURCE_DIR}
+  - make -j4
+  - bin/atlas --info
 
-  # #################################################################
-  # # Test Atlas
-  # #################################################################
-  # - ctest
+  #################################################################
+  # Test Atlas
+  #################################################################
+  - ctest
 
 after_failure:
 

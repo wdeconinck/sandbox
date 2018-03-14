@@ -32,5 +32,4 @@ cd ${SOURCE_DIR} >> ${BUILD_OUTPUT} 2>&1
 git rev-parse HEAD
 cd ..
 rm -rf ${SOURCE_DIR}
-
-popd
+popd >> ${BUILD_OUTPUT} 2>&1

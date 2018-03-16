@@ -48,49 +48,49 @@ matrix:
            sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
            packages: ['clang-3.8', 'gfortran']
 
-    - os: linux
-      compiler: gcc
-      env:
-        - CACHE_NAME=linux-gcc5-mpich
-        - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
-        - MPI='mpich'
-        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-      addons:
-        apt:
-          sources:  ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'gcc-5', 'gfortran-5']
+    # - os: linux
+    #   compiler: gcc
+    #   env:
+    #     - CACHE_NAME=linux-gcc5-mpich
+    #     - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
+    #     - MPI='mpich'
+    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+    #   addons:
+    #     apt:
+    #       sources:  ['ubuntu-toolchain-r-test']
+    #       packages: ['g++-5', 'gcc-5', 'gfortran-5']
 
-    - os: linux
-      compiler: gcc
-      env:
-        - CACHE_NAME=linux-gcc5-openmpi
-        - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
-        - MPI='openmpi'
-        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-      addons:
-        apt:
-          sources:  ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'gcc-5', 'gfortran-5']
+    # - os: linux
+    #   compiler: gcc
+    #   env:
+    #     - CACHE_NAME=linux-gcc5-openmpi
+    #     - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
+    #     - MPI='openmpi'
+    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+    #   addons:
+    #     apt:
+    #       sources:  ['ubuntu-toolchain-r-test']
+    #       packages: ['g++-5', 'gcc-5', 'gfortran-5']
 
-    - os: linux
-      compiler: gcc
-      env:
-        - CACHE_NAME=linux-gcc7-mpich
-        - CXX_COMPILER='g++-7' C_COMPILER='gcc-7' Fortran_COMPILER='gfortran-7'
-        - MPI='mpich'
-        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-      addons:
-        apt:
-          sources:  ['ubuntu-toolchain-r-test']
-          packages: ['g++-7', 'gcc-7', 'gfortran-7']
+    # - os: linux
+    #   compiler: gcc
+    #   env:
+    #     - CACHE_NAME=linux-gcc7-mpich
+    #     - CXX_COMPILER='g++-7' C_COMPILER='gcc-7' Fortran_COMPILER='gfortran-7'
+    #     - MPI='mpich'
+    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+    #   addons:
+    #     apt:
+    #       sources:  ['ubuntu-toolchain-r-test']
+    #       packages: ['g++-7', 'gcc-7', 'gfortran-7']
 
-    - os: osx
-      env:
-        - CACHE_NAME=osx-clang-openmpi
-        - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
-        - MPI=openmpi
-        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-      osx_image: xcode9
+    # - os: osx
+    #   env:
+    #     - CACHE_NAME=osx-clang-openmpi
+    #     - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
+    #     - MPI=openmpi
+    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+    #   osx_image: xcode9
 
     ##################################
     # KNOWN TO FAIL, so comment
@@ -135,7 +135,7 @@ before_install:
 
   - |
     ### Load scripts
-    source ${TRAVIS_BUILD_DIR}/ci/source_me
+    source ${TRAVIS_BUILD_DIR}/ci/source-me.sh
 
 install:
 
@@ -144,6 +144,12 @@ install:
   #################################################################
   - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
   - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+  - |
+    DEPS_BRANCH="master"
+    if [[ "${TRAVIS_BRANCH}" != "master" ]]; then
+      DEPS_BRANCH="develop"
+    fi
+
 
   #################################################################
   # Install Compilers
@@ -201,7 +207,7 @@ install:
   #################################################################
   - |
     ### Install ecbuild
-    git clone --depth 1 -b ${TRAVIS_BRANCH} https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
+    git clone --depth 1 -b ${DEPS_BRANCH} https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
     export PATH=${DEPS_DIR}/ecbuild/bin:${PATH}
     export ECBUILD_MODULE_PATH=${DEPS_DIR}/ecbuild/cmake
     ecbuild --version
@@ -211,7 +217,7 @@ install:
   #################################################################
   - |
     ### Install eckit
-    install-github --repo eckit --branch ${TRAVIS_BRANCH} --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG ${ECKIT_CMAKE_OPTIONS}"
+    install-github --repo eckit --branch ${DEPS_BRANCH} --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG ${ECKIT_CMAKE_OPTIONS}"
     ${DEPS_DIR}/eckit/bin/eckit_version
 
   #################################################################
@@ -219,7 +225,7 @@ install:
   #################################################################
   - |
     ### Install fckit
-    install-github --repo fckit --branch ${TRAVIS_BRANCH} --prefix ${DEPS_DIR}/fckit --cmake "-DENABLE_TESTS=ON -DCMAKE_BUILD_TYPE=DEBUG" --depends "eckit"
+    install-github --repo fckit --branch ${DEPS_BRANCH} --prefix ${DEPS_DIR}/fckit --cmake "-DENABLE_TESTS=ON -DCMAKE_BUILD_TYPE=DEBUG" --depends "eckit"
 
 script:
 
@@ -239,7 +245,7 @@ script:
   #################################################################
   # Download Atlas
   #################################################################
-  - git clone --depth 1 -b ${TRAVIS_BRANCH} https://github.com/ecmwf/atlas ${ATLAS_SOURCE_DIR}
+  - git clone --depth 1 -b ${DEPS_BRANCH} https://github.com/ecmwf/atlas ${ATLAS_SOURCE_DIR}
 
   #################################################################
   # Build Atlas

@@ -201,7 +201,7 @@ install:
   #################################################################
   - |
     ### Install ecbuild
-    git clone --depth 1 -b master https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
+    git clone --depth 1 -b ${TRAVIS_BRANCH} https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
     export PATH=${DEPS_DIR}/ecbuild/bin:${PATH}
     export ECBUILD_MODULE_PATH=${DEPS_DIR}/ecbuild/cmake
     ecbuild --version
@@ -211,7 +211,7 @@ install:
   #################################################################
   - |
     ### Install eckit
-    install-github --repo eckit --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG ${ECKIT_CMAKE_OPTIONS}"
+    install-github --repo eckit --branch ${TRAVIS_BRANCH} --prefix ${DEPS_DIR}/eckit --cmake "-DENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=DEBUG ${ECKIT_CMAKE_OPTIONS}"
     ${DEPS_DIR}/eckit/bin/eckit_version
 
   #################################################################
@@ -219,7 +219,7 @@ install:
   #################################################################
   - |
     ### Install fckit
-    install-github --repo fckit --prefix ${DEPS_DIR}/fckit --cmake "-DENABLE_TESTS=ON -DCMAKE_BUILD_TYPE=DEBUG" --depends "eckit"
+    install-github --repo fckit --branch ${TRAVIS_BRANCH} --prefix ${DEPS_DIR}/fckit --cmake "-DENABLE_TESTS=ON -DCMAKE_BUILD_TYPE=DEBUG" --depends "eckit"
 
 script:
 
@@ -239,7 +239,7 @@ script:
   #################################################################
   # Download Atlas
   #################################################################
-  - git clone --depth 1 -b master https://github.com/ecmwf/atlas ${ATLAS_SOURCE_DIR}
+  - git clone --depth 1 -b ${TRAVIS_BRANCH} https://github.com/ecmwf/atlas ${ATLAS_SOURCE_DIR}
 
   #################################################################
   # Build Atlas

@@ -207,7 +207,7 @@ install:
   #################################################################
   - |
     ### Install ecbuild
-    git clone --depth 1 -b ${TRAVIS_BRANCH} https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
+    git clone --depth 1 -b ${DEPS_BRANCH} https://github.com/ecmwf/ecbuild ${DEPS_DIR}/ecbuild
     export PATH=${DEPS_DIR}/ecbuild/bin:${PATH}
     export ECBUILD_MODULE_PATH=${DEPS_DIR}/ecbuild/cmake
     ecbuild --version

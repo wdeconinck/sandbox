@@ -48,49 +48,49 @@ matrix:
            sources:  ['llvm-toolchain-precise', 'ubuntu-toolchain-r-test']
            packages: ['clang-3.8', 'gfortran']
 
-    - os: linux
-      compiler: gcc
-      env:
-        - CACHE_NAME=linux-gcc5-mpich
-        - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
-        - MPI='mpich'
-        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-      addons:
-        apt:
-          sources:  ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'gcc-5', 'gfortran-5']
+    # - os: linux
+    #   compiler: gcc
+    #   env:
+    #     - CACHE_NAME=linux-gcc5-mpich
+    #     - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
+    #     - MPI='mpich'
+    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+    #   addons:
+    #     apt:
+    #       sources:  ['ubuntu-toolchain-r-test']
+    #       packages: ['g++-5', 'gcc-5', 'gfortran-5']
 
-    - os: linux
-      compiler: gcc
-      env:
-        - CACHE_NAME=linux-gcc5-openmpi
-        - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
-        - MPI='openmpi'
-        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-      addons:
-        apt:
-          sources:  ['ubuntu-toolchain-r-test']
-          packages: ['g++-5', 'gcc-5', 'gfortran-5']
+    # - os: linux
+    #   compiler: gcc
+    #   env:
+    #     - CACHE_NAME=linux-gcc5-openmpi
+    #     - CXX_COMPILER='g++-5' C_COMPILER='gcc-5' Fortran_COMPILER='gfortran-5'
+    #     - MPI='openmpi'
+    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+    #   addons:
+    #     apt:
+    #       sources:  ['ubuntu-toolchain-r-test']
+    #       packages: ['g++-5', 'gcc-5', 'gfortran-5']
 
-    - os: linux
-      compiler: gcc
-      env:
-        - CACHE_NAME=linux-gcc7-mpich
-        - CXX_COMPILER='g++-7' C_COMPILER='gcc-7' Fortran_COMPILER='gfortran-7'
-        - MPI='mpich'
-        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-      addons:
-        apt:
-          sources:  ['ubuntu-toolchain-r-test']
-          packages: ['g++-7', 'gcc-7', 'gfortran-7']
+    # - os: linux
+    #   compiler: gcc
+    #   env:
+    #     - CACHE_NAME=linux-gcc7-mpich
+    #     - CXX_COMPILER='g++-7' C_COMPILER='gcc-7' Fortran_COMPILER='gfortran-7'
+    #     - MPI='mpich'
+    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+    #   addons:
+    #     apt:
+    #       sources:  ['ubuntu-toolchain-r-test']
+    #       packages: ['g++-7', 'gcc-7', 'gfortran-7']
 
-    - os: osx
-      env:
-        - CACHE_NAME=osx-clang-openmpi
-        - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
-        - MPI=openmpi
-        - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
-      osx_image: xcode9
+    # - os: osx
+    #   env:
+    #     - CACHE_NAME=osx-clang-openmpi
+    #     - CXX_COMPILER='clang++' C_COMPILER='clang' Fortran_COMPILER='gfortran'
+    #     - MPI=openmpi
+    #     - ATLAS_CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=DEBUG"
+    #   osx_image: xcode9
 
     ##################################
     # KNOWN TO FAIL, so comment
@@ -135,7 +135,7 @@ before_install:
 
   - |
     ### Load scripts
-    source ${TRAVIS_BUILD_DIR}/ci/source_me
+    source ${TRAVIS_BUILD_DIR}/ci/source-me.sh
 
 install:
 

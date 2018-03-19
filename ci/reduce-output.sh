@@ -17,7 +17,7 @@ error_handler() {
 # If an error occurs, run our error handler to output a tail of the build
 trap 'error_handler' ERR
 
-# Set up a repeating loop to send some output to Travis.
+# Set up a repeating loop to display some output regularly.
 bash -c "while true; do sleep $PING_SLEEP; echo \" ++ \$(date) - running ... \"; done" &
 PING_LOOP_PID=$!
 BUILD_OUTPUT=build-$PING_LOOP_PID.out

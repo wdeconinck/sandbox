@@ -120,4 +120,4 @@ fi
 # Export
 REPO=$(echo $repo | awk '{print toupper($0)}')
 echo "To make it easier to find ${repo}, execute now"
-eval "export ${REPO}_PATH=${PREFIX}"
+echo "export ${REPO}_PATH=${PREFIX}"
